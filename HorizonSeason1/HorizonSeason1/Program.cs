@@ -11,8 +11,7 @@ namespace HorizonSeason1
     {
         //there is a map for the stars but every other thing just has its own x and y just so things could go on each other
 
-
-
+            
         /// <summary>
         /// to do list
         /// constroctors
@@ -44,11 +43,11 @@ namespace HorizonSeason1
         {
             Console.Title = "Horizons: Season One";
             Console.CursorVisible = false;
+            Console.SetWindowSize(131, 40);
+
 
             string[] options = { "Start new game", "    credits", "     exit" };
-
-
-
+            
             while (true)
             {
                 Console.BackgroundColor = ConsoleColor.Black;
@@ -257,11 +256,26 @@ namespace HorizonSeason1
 
                 //stoping to read input
                 key = Console.ReadKey(false).Key;
-
-
-                switch (key)
+                
+                if (key == ConsoleKey.Enter)
                 {
-                    case ConsoleKey.Enter: try { galaxy.Getstar(); showmove = false; choose(offsetx, offsety); loadBackground(); galaxy.GetMap(offsetx, offsety); showmove = true; } catch { galaxy.GetMap(offsetx, offsety); show = true; showmove = true; } break;
+                    try
+                    {
+                        galaxy.Getstarname(); //checking if place has a system
+                        showmove = false;
+                        choose(offsetx, offsety);
+                        Console.Clear();
+                        loadBackground();
+                        galaxy.GetMap(offsetx, offsety);
+                        showmove = true;
+                    }
+                    catch
+                    {
+                        Console.Clear();
+                        galaxy.GetMap(offsetx, offsety);
+                        show = true;
+                        showmove = true;
+                    }
                 }
 
                 //deleting trace

@@ -10,12 +10,17 @@ namespace HorizonSeason1
     {
         private string name = "";
         private string description;
-        private bool homeStar;
-        private int counter;
-        private bool astroidbelt;
-        private int x;
-        private int y;
+        private bool homeStar; //if this star is the home system
+        private int counter; //?
+        private bool astroidbelt; //weather the planet is soraunded by an astroid belt
+        private int x; //galaxy map x
+        private int y; //galaxy map y
+        private int sx; //system x
+        private int sy; //system y
+        private int radius; //radius of star
         Planet[] planets;
+
+        public int Radius { get => radius; set => radius = value; }
 
         public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, bool homeStar = false)
         {
@@ -129,65 +134,49 @@ namespace HorizonSeason1
                 int[] array = new int[3];
                 array[0] = rand.Next(1, 11);
                 array[1] = rand.Next(1, 18);
-                array[2] = rand.Next(1, 5);
+                array[2] = rand.Next(2, 4);
 
-                planets[i] = new Planet(homeStar, array);
+                planets[i] = new Planet(homeStar, array, radius);
             }
-        }
 
-        public string getName()
-        {
-            return name;
-        }
-        public int getCounter()
-        {
-            return counter;
-        }
-        public bool GetAstroidBelt()
-        {
-            return astroidbelt;
-        }
-        public string GetInfo()
-        {
-            string pla = "";
-            //creating string that has all planets names
-            for (int i = 0; i < planets.Length; i++)
+            //setting radius
+            switch (name)
             {
-                pla += planets[i].TypeName;
-                if (i != planets.Length - 1)
-                {
-                    pla += ", ";
-                }
+                case "White Sun": radius = 4; break;
+                case "Yellow Sun": radius = 4; break;
+                case "Blue Sun": radius = 4; break;
+                case "Protostar": radius = 4; break;
+                case "Red Supergiant": radius = 5; break;
+                case "Binary": radius = 4; break;
+                case "Red Dwarf":  radius = 2; break;
+                case "White Dwarf": radius = 2; break;
             }
-            return name + " - home star = " + homeStar + ", anstroid belt = " + astroidbelt + "\n[" + pla + "]";
         }
-
+        
         public void drawstar(int offsetx, int offsety)
         {
-            double r = 0;
+            double r = radius;
             int binary = 1;
             //what color
             switch (name)
             {
-                case "White Sun": Console.ForegroundColor = ConsoleColor.White; r = 4; break;
-                case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; r = 4; break;
-                case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; r = 4; break;
-                case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; r = 4; break;
-                case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; r = 5; break;
-                case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; r = 4; binary = 2; break;
-                case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; r = 2; break;
-                case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; r = 2; break;
+                case "White Sun": Console.ForegroundColor = ConsoleColor.White; break;
+                case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; break;
+                case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; break;
+                case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; break;
+                case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; break;
+                case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; binary = 2; break;
+                case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; break;
+                case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; break;
             }
 
             double r_in = r - 0.0;
             double r_out = r + 0.1;
+            
+            offsety -= Convert.ToInt32(r);
 
-            if (binary == 1) //offsetting to the middle of not binnary
-            {
-                offsetx += Convert.ToInt32(r) * 2;
-            }
-
-            offsety -= Convert.ToInt32(r) * 2;
+            this.sx = offsetx;
+            this.sy = offsety;
 
             for (int i = 0; i < binary; i++)
             {
@@ -229,7 +218,7 @@ namespace HorizonSeason1
         }
         public void drawAstroidBelt()
         {
-            int radius = 20;
+            int radius = 13;
             double console_ratio = Convert.ToDouble(15.0 / 3.0);
             double a = console_ratio * radius;
             double b = radius;
@@ -240,7 +229,7 @@ namespace HorizonSeason1
                 for (double x = -a; x < a; x++)
                 {
                     double d = (x / a) * (x / a) + (y / b) * (y / b);
-                    if (d > 0.9 && d < 1.0 && randy.Next(0, 7) < 6)
+                    if (d > 0.8 && d < 1.0 && randy.Next(0, 11) < 9)
                     {
                         Console.Write("*");
                     }
@@ -254,6 +243,7 @@ namespace HorizonSeason1
         }
         public void drawplanets(int offsetx, int offsety)
         {
+            int[,] offsettaken = new int[2, planets.Length];
             for (int j = 0; j < planets.Length; j++)
             {
                 Console.ForegroundColor = ConsoleColor.White;
@@ -262,7 +252,7 @@ namespace HorizonSeason1
 
                 bool exist = true;
 
-                double r = p.Size;
+                double r = p.Size - 1;
                 //what color
                 switch (p.TypeName)
                 {
@@ -291,10 +281,34 @@ namespace HorizonSeason1
                 {
                     double r_in = r - 0.0;
                     double r_out = r + 0.1;
+                    int a;
+                    int b;
+                    do
+                    {
+                        a = rand.Next(-2, 2);
+                        b = rand.Next(-20, 20);
+                        if (a < 0)
+                        {
+                            offsety -= Convert.ToInt32(radius) + a;
+                        }
+                        else
+                        {
+                            offsety += Convert.ToInt32(radius) + a;
+                        }
+                        if (b < 0)
+                        {
+                            offsetx -= Convert.ToInt32(radius) + b;
+                        }
+                        else
+                        {
+                            offsetx += Convert.ToInt32(radius) + b;
+                        }
+                        
+                    }
+                    while (a == 0 && offsetx > this.sx && offsetx < this.sx + radius * 2);
 
-                    offsety -= Convert.ToInt32(r) + rand.Next(-10, 10);
-                    offsetx += Convert.ToInt32(r) + rand.Next(-25, 25);
-
+                    Console.WriteLine(offsetx);
+                    Console.WriteLine(offsety);
                     for (int i = 0; i < planets.Length; i++)
                     {
                         int counterx = 0;
@@ -331,7 +345,7 @@ namespace HorizonSeason1
                                 }
                                 else
                                 {
-                                    Console.Write(" ");
+                                    
                                 }
                                 counterx++;
                             }
@@ -345,13 +359,15 @@ namespace HorizonSeason1
         }
         public void drawSystem(int offsetx, int offsety)
         {
-            if (astroidbelt == true)
+            if (astroidbelt)
             {
                 drawAstroidBelt();
             }
 
-            drawstar(offsetx, offsety);
-            drawplanets(offsetx, offsety);
+            //drawstar(offsetx, offsety);
+            //drawplanets(offsetx, offsety);
+            drawstar(Console.WindowWidth / 2 - radius * 3, Console.WindowHeight / 2 - radius);
+            drawplanets(Console.WindowWidth / 2 - radius * 3, Console.WindowHeight / 2 - radius);
         }
 
         public int getx()
@@ -369,6 +385,33 @@ namespace HorizonSeason1
         public void sety(int y)
         {
             this.y = y;
+        }
+
+        public string getName()
+        {
+            return name;
+        }
+        public int getCounter()
+        {
+            return counter;
+        }
+        public bool GetAstroidBelt()
+        {
+            return astroidbelt;
+        }
+        public string GetInfo()
+        {
+            string pla = "";
+            //creating string that has all planets names
+            for (int i = 0; i < planets.Length; i++)
+            {
+                pla += planets[i].TypeName;
+                if (i != planets.Length - 1)
+                {
+                    pla += ", ";
+                }
+            }
+            return name + " - home star = " + homeStar + ", anstroid belt = " + astroidbelt + "\n[" + pla + "]";
         }
     }
 }

@@ -14,14 +14,18 @@ namespace HorizonSeason1
         private int maxPop;
         private int size;
         private int pops = 0;
+        private int x;
+        private int y;
 
         public string TypeName { get => typeName; set => typeName = value; }
         public int BaseHabitabilty { get => baseHabitabilty; set => baseHabitabilty = value; }
         public int MaxPop { get => maxPop; set => maxPop = value; }
         public int Size { get => size; set => size = value; }
         public int Pops { get => pops; set => pops = value; }
+        public int X { get => x; set => x = value; }
+        public int Y { get => y; set => y = value; }
 
-        public Planet(bool homestar, int[] array)
+        public Planet(bool homestar, int[] array, int radius)
         {
             string name = "";
             int habitabilty = 0;
@@ -131,6 +135,25 @@ namespace HorizonSeason1
                     break;
                 case 4:
                     maxPop = 15;
+                    break;
+            }
+
+            //randomise place in system
+            Random rand = new Random();
+            int position = rand.Next(0, 10);
+
+            int middlex = Console.WindowWidth / 2 + radius * 4 + 5;
+            int middley = Console.WindowHeight / 2 - radius;
+
+            switch (position)
+            {
+                case 0:
+                    this.x = middlex;
+                    this.y = middley;
+                    break;
+                case 1:
+                    this.x = middlex + size;
+                    this.y = middley - size;
                     break;
             }
 
