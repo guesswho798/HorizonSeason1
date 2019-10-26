@@ -44,8 +44,8 @@ namespace HorizonSeason1
             Console.Title = "Horizons: Season One";
             Console.CursorVisible = false;
             Console.SetWindowSize(131, 40);
-
-
+            
+            //start of program
             string[] options = { "Start new game", "    credits", "     exit" };
             
             while (true)
