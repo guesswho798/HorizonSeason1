@@ -15,6 +15,7 @@ namespace HorizonSeason1
         private int size;
         private int pops = 0;
         private int position;
+        private bool owened;
 
         public string TypeName { get => typeName; set => typeName = value; }
         public int BaseHabitabilty { get => baseHabitabilty; set => baseHabitabilty = value; }
@@ -22,6 +23,7 @@ namespace HorizonSeason1
         public int Size { get => size; set => size = value; }
         public int Pops { get => pops; set => pops = value; }
         public int Position { get => position; set => position = value; }
+        public bool Owened { get => owened; set => owened = value; }
 
         public Planet(bool homestar, int[] array, int radius, Random rand, int position)
         {
@@ -30,9 +32,11 @@ namespace HorizonSeason1
 
             if (homestar == false)
             {
+                this.owened = false;
                 if (array[0] < 3) //dead planet
                 {
                     name = "Destroyed Planet";
+                    //size = 3;
                     habitabilty = 0;
                 }
                 else //a habitable planet
@@ -113,13 +117,33 @@ namespace HorizonSeason1
             else if (homestar == true)
             {
                 //first you need to add life forms
+                this.owened = true;
+
+                switch (rand.Next(0, 3))
+                {
+                    case 0:
+                        name = "Gaia Planet";
+                        habitabilty = 100;
+                        break;
+                    case 1:
+                        name = "Ocean Planet";
+                        habitabilty = 80;
+                        break;
+                    case 2:
+                        name = "Temperate Planet";
+                        habitabilty = 80;
+                        break;
+                }
             }
 
             TypeName = name;
             baseHabitabilty = habitabilty;
 
             //getting size of planet
-            this.size = array[2];
+            //if (name != "Destroyed Planet")
+            //{
+                this.size = array[2];
+            //}
             switch (array[2])
             {
                 case 1:

@@ -242,8 +242,6 @@ namespace HorizonSeason1
         {
             galaxy.GetMap(offsetx, offsety);
 
-            ConsoleKey key = new ConsoleKey();
-
             showmove = true;
 
             while (true)
@@ -254,7 +252,7 @@ namespace HorizonSeason1
                 Console.Write(" ");
 
                 //stoping to read input
-                key = Console.ReadKey(false).Key;
+                ConsoleKey key = Console.ReadKey(false).Key;
                 
                 if (key == ConsoleKey.Enter)
                 {
