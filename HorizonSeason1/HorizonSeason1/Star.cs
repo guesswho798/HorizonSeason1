@@ -450,7 +450,12 @@ namespace HorizonSeason1
             for (int i = 0; i < Console.WindowHeight; i++)
             {
                 Console.SetCursorPosition(100, i);
-                if (i != Console.WindowHeight - 1)
+
+                if (i == 31)
+                {
+                    Console.WriteLine("┤");
+                }
+                else if (i != Console.WindowHeight - 1)
                 {
                     Console.WriteLine("│");
                 }
@@ -459,6 +464,10 @@ namespace HorizonSeason1
                     Console.Write("│");
                 }
             }
+
+            Console.SetCursorPosition(0, 31);
+            Console.WriteLine("────────────────────────────────────────────────────────────────────────────────────────────────────");
+            Console.Write(GetInfo());
 
             Console.SetCursorPosition(105, 1);
             Console.WriteLine(selectedP.TypeName);
@@ -631,7 +640,6 @@ namespace HorizonSeason1
             while (stay)
             {
                 //drawing
-                //Console.WriteLine(GetInfo());
                 if (astroidbelt)
                 {
                     drawAstroidBelt();

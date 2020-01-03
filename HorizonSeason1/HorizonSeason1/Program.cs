@@ -273,6 +273,11 @@ namespace HorizonSeason1
                         showmove = true;
                     }
                 }
+                if (key == ConsoleKey.Escape)
+                {
+                    escape();
+                    galaxy.GetMap(offsetx, offsety);
+                }
 
                 //deleting trace
                 if (key == ConsoleKey.UpArrow || key == ConsoleKey.DownArrow || key == ConsoleKey.LeftArrow || key == ConsoleKey.RightArrow)
@@ -311,6 +316,37 @@ namespace HorizonSeason1
                     Console.Write("█");
                 }
             }
+        }
+        public static void escape()
+        {
+            Console.Clear();
+            showmove = false;
+            Console.Write(" ");
+            setCur(0, 5);
+            Console.WriteLine(@"
+                                        ┌────────────────────────────────────────────────────┐
+                                        │                     escape                         │
+                                        │                                                    │
+                                        │                                                    │
+                                        │                                                    │
+                                        │                                                    │
+                                        │                                                    │
+                                        │                                                    │
+                                        │                                                    │
+                                        │                                                    │
+                                        │                                                    │
+                                        │                                                    │
+                                        └────────────────────────────────────────────────────┘");
+
+            string[] options = {"Back", "Options", "Exit"};
+            switch (Menu(62, 11, options, false, true))
+            {
+                case 2:
+                    Environment.Exit(0);
+                    break;
+            }
+            showmove = true;
+            Console.Clear();
         }
 
         public static void loadBackground()
