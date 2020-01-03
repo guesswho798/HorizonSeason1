@@ -21,6 +21,7 @@ namespace HorizonSeason1
         Planet[] planets;
 
         public int Radius { get => radius; set => radius = value; }
+        public Planet[] Planets { get => planets; set => planets = value; }
 
         public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, bool homeStar = false)
         {
@@ -124,7 +125,14 @@ namespace HorizonSeason1
             }
             else
             {
-                astroidbelt = true;
+                astroidbelt = false;
+            }
+
+            int[] positionstaken = new int[planets.Length];
+
+            for (int a = 0; a < positionstaken.Length; a++)
+            {
+                positionstaken[a] = 999;
             }
 
 
@@ -136,8 +144,28 @@ namespace HorizonSeason1
                 array[1] = rand.Next(1, 18);
                 array[2] = rand.Next(2, 4);
 
-                planets[i] = new Planet(homeStar, array, radius);
+
+                bool taken;
+                do
+                {
+                    taken = false;
+                    positionstaken[i] = rand.Next(0, 8);
+
+                    for (int a = 0; a < planets.Length; a++)
+                    {
+                        if (positionstaken[a] == positionstaken[i] && a != i)
+                        {
+                            taken = true;
+                        }
+                    }
+                }
+                while (taken == true);
+
+                planets[i] = new Planet(homeStar, array, radius, rand, positionstaken[i]);
             }
+
+            //sort planets with their position
+            this.Planets = planets.OrderBy(c => c.Position).ToArray();
 
             //setting radius
             switch (name)
@@ -211,7 +239,6 @@ namespace HorizonSeason1
                         counterx++;
                     }
                     countery++;
-                    Console.WriteLine();
                 }
             }
             Console.ForegroundColor = ConsoleColor.White;
@@ -241,13 +268,14 @@ namespace HorizonSeason1
                 Console.WriteLine();
             }
         }
-        public void drawplanets(int offsetx, int offsety)
+        public void drawplanets(int selected)
         {
             int[,] offsettaken = new int[2, planets.Length];
             for (int j = 0; j < planets.Length; j++)
             {
                 Console.ForegroundColor = ConsoleColor.White;
                 Planet p = planets[j];
+
                 Random rand = new Random();
 
                 bool exist = true;
@@ -274,100 +302,196 @@ namespace HorizonSeason1
                     case "Dead Planet (hot)": Console.ForegroundColor = ConsoleColor.Red; break;
                     case "Dead Planet (cold)": Console.ForegroundColor = ConsoleColor.Blue; break;
                     case "Tomb Planet": Console.ForegroundColor = ConsoleColor.Gray; break;
-                    default: exist = false; break;
+                    default: exist = false; Console.WriteLine("'" + p.TypeName + "' does not exist"); break;
                 }
 
+                int offsetx = 0;
+                int offsety = 0;
                 if (exist)
                 {
                     double r_in = r - 0.0;
                     double r_out = r + 0.1;
-                    int a;
-                    int b;
-                    do
+
+                    int middlex = sx;
+                    int middley = sy;
+
+                    if (name != "Binary")
                     {
-                        a = rand.Next(-2, 2);
-                        b = rand.Next(-20, 20);
-                        if (a < 0)
+                        switch (p.Position)
                         {
-                            offsety -= Convert.ToInt32(radius) + a;
+                            case 0:
+                                offsetx = middlex; //middle top
+                                offsety = middley - 2 * (radius);
+                                break;
+                            case 1:
+                                offsetx = middlex + radius * 5; //right top
+                                offsety = middley - (radius * 2);
+                                break;
+                            case 2:
+                                offsetx = middlex + 4 * (p.Size + radius); //right middle
+                                offsety = middley;
+                                break;
+                            case 3:
+                                offsetx = middlex + radius * 5; //right bottom
+                                offsety = middley + radius * 2;
+                                break;
+                            case 4:
+                                offsetx = middlex; //middle bottom
+                                offsety = middley + 2 * (radius + p.Size);
+                                break;
+                            case 5:
+                                offsetx = middlex - Radius * 5; //left bottom
+                                offsety = middley + radius * 2;
+                                break;
+                            case 6:
+                                offsetx = middlex - 4 * (p.Size + radius); //left middle
+                                offsety = middley;
+                                break;
+                            case 7:
+                                offsetx = middlex - radius * 5; //top left
+                                offsety = middley - radius * 2;
+                                break;
                         }
-                        else
-                        {
-                            offsety += Convert.ToInt32(radius) + a;
-                        }
-                        if (b < 0)
-                        {
-                            offsetx -= Convert.ToInt32(radius) + b;
-                        }
-                        else
-                        {
-                            offsetx += Convert.ToInt32(radius) + b;
-                        }
-                        
                     }
-                    while (a == 0 && offsetx > this.sx && offsetx < this.sx + radius * 2);
-
-                    Console.WriteLine(offsetx);
-                    Console.WriteLine(offsety);
-                    for (int i = 0; i < planets.Length; i++)
+                    else
                     {
-                        int counterx = 0;
-                        int countery = 0;
-
-                        for (double y = r; y >= -r; --y)
+                        switch (p.Position)
                         {
-                            counterx = 0;
-                            for (double x = -r; x < r_out; x += 0.5)
-                            {
-                                Console.SetCursorPosition(counterx + offsetx, countery + offsety);
-                                double value = x * x + y * y;
-                                if (value >= r_in * r_in && value <= r_out * r_out)
-                                {
-                                    if (p.TypeName == "Destroyed Planet" && rand.Next(0, 2) == 0)
-                                    {
-                                        Console.Write("*");
-                                    }
-                                    else if (p.TypeName != "Destroyed Planet")
-                                    {
-                                        Console.Write("*");
-                                    }
-                                }
-                                else if (value < r_in * r_in && value < r_out * r_out)
-                                {
-                                    if (p.TypeName == "Destroyed Planet" && rand.Next(0, 2) == 0)
-                                    {
-                                        Console.Write("*");
-                                    }
-                                    else if (p.TypeName != "Destroyed Planet")
-                                    {
-                                        Console.Write("*");
-                                    }
-                                }
-                                else
-                                {
-                                    
-                                }
-                                counterx++;
-                            }
-                            countery++;
-                            Console.WriteLine();
+                            case 0:
+                                offsetx = middlex + radius * 2; //middle top
+                                offsety = middley - 2 * (radius);
+                                break;
+                            case 1:
+                                offsetx = middlex + radius * 8; //right top
+                                offsety = middley - (radius * 2);
+                                break;
+                            case 2:
+                                offsetx = middlex + 8 * (p.Size + radius); //right middle
+                                offsety = middley;
+                                break;
+                            case 3:
+                                offsetx = middlex + radius * 10; //right bottom
+                                offsety = middley + radius * 2;
+                                break;
+                            case 4:
+                                offsetx = middlex + radius; //middle bottom
+                                offsety = middley + 2 * (radius + p.Size);
+                                break;
+                            case 5:
+                                offsetx = middlex - Radius * 5; //left bottom
+                                offsety = middley + radius * 2;
+                                break;
+                            case 6:
+                                offsetx = middlex - 4 * (p.Size + radius); //left middle
+                                offsety = middley;
+                                break;
+                            case 7:
+                                offsetx = middlex - radius * 5; //top left
+                                offsety = middley - radius * 2;
+                                break;
                         }
+                    }
+
+                    int counterx = 0;
+                    int countery = 0;
+
+                    for (double y = r; y >= -r; --y)
+                    {
+                        counterx = 0;
+                        for (double x = -r; x < r_out; x += 0.5)
+                        {
+                            Console.SetCursorPosition(counterx + offsetx, countery + offsety);
+                            double value = x * x + y * y;
+                            if (value >= r_in * r_in && value <= r_out * r_out)
+                            {
+                                if (p.TypeName == "Destroyed Planet" && rand.Next(0, 2) == 0)
+                                {
+                                    Console.Write("*");
+                                }
+                                else if (p.TypeName != "Destroyed Planet")
+                                {
+                                    Console.Write("*");
+                                }
+                            }
+                            else if (value < r_in * r_in && value < r_out * r_out)
+                            {
+                                if (p.TypeName == "Destroyed Planet" && rand.Next(0, 3) != 0)
+                                {
+                                    Console.Write("*");
+                                }
+                                else if (p.TypeName != "Destroyed Planet")
+                                {
+                                    Console.Write("*");
+                                }
+                            }
+                            counterx++;
+                        }
+                        countery++;
+                        Console.WriteLine();
+                    }
+
+                    if (j == selected)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.SetCursorPosition(p.Size + offsetx, p.Size + offsety - 1);
+                        if (p.Size == 3)
+                        {
+                            Console.SetCursorPosition(p.Size + offsetx + 1, p.Size + offsety - 1);
+                        }
+                        Console.Write("@");
                     }
                 }
             }
             Console.ForegroundColor = ConsoleColor.White;
         }
-        public void drawSystem(int offsetx, int offsety)
+        public void drawSystem()
         {
-            if (astroidbelt)
+            rotateStar();
+            int selector = 0;
+            ConsoleKey key = new ConsoleKey();
+            bool stay = true;
+            while (stay)
             {
-                drawAstroidBelt();
-            }
+                //drawing
+                Console.WriteLine(GetInfo());
+                if (astroidbelt)
+                {
+                    drawAstroidBelt();
+                }
+                drawstar(Console.WindowWidth / 2 - radius * 3, Console.WindowHeight / 2 - radius);
+                drawplanets(selector);
 
-            //drawstar(offsetx, offsety);
-            //drawplanets(offsetx, offsety);
-            drawstar(Console.WindowWidth / 2 - radius * 3, Console.WindowHeight / 2 - radius);
-            drawplanets(Console.WindowWidth / 2 - radius * 3, Console.WindowHeight / 2 - radius);
+                //reciving input
+                key = Console.ReadKey().Key;
+                if (key == ConsoleKey.RightArrow || key == ConsoleKey.D)
+                {
+                    selector++;
+                    if (selector == planets.Length)
+                    {
+                        selector = 0;
+                    }
+                }
+                if (key == ConsoleKey.LeftArrow || key == ConsoleKey.A)
+                {
+                    selector--;
+                    if (selector == -1)
+                    {
+                        selector = planets.Length - 1;
+                    }
+                }
+                if (key == ConsoleKey.Escape || key == ConsoleKey.Backspace || key == ConsoleKey.Enter)
+                {
+                    stay = false;
+                }
+                Console.Clear();
+            }
+        }
+        public void rotateStar()
+        {
+            for (int i = 0; i < planets.Length; i++)
+            {
+                planets[i].MovePlanet();
+            }
         }
 
         public int getx()

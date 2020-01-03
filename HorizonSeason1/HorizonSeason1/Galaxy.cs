@@ -95,7 +95,7 @@ namespace HorizonSeason1
             int numOfStars = rand.Next(y, x);
             this.numOfStars = numOfStars;
             this.xy = new Star[numOfStars];
-            int homeStar = rand.Next(0, numOfStars);
+            int homeStar = rand.Next(2, numOfStars - 1);
 
             Console.WriteLine("max: " + numOfStars);
             Console.WriteLine("home: " + homeStar);
@@ -217,7 +217,6 @@ namespace HorizonSeason1
             }
             catch (Exception)
             {
-
                 return "";
             }
         }

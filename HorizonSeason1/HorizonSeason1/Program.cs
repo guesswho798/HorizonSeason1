@@ -181,8 +181,8 @@ namespace HorizonSeason1
             ************************************
             *           credits:               *
             *                                  *
-            *      Raz Shneider - coding       *
-            *      Aden Prescot - whatever     *
+            *      Raz Shneider -              *
+            *      Aden Prescot -              *
             *                                  *
             ************************************
               press any button to continue...");
@@ -227,7 +227,6 @@ namespace HorizonSeason1
 
             galaxy = new Galaxy(difficulty, size, dense, rand);
 
-
             Thread t = new Thread(blink);
             t.IsBackground = true;
             t.Start();
@@ -263,15 +262,14 @@ namespace HorizonSeason1
                     {
                         galaxy.Getstarname(); //checking if place has a system
                         showmove = false;
-                        choose(offsetx, offsety);
                         Console.Clear();
+                        galaxy.Getstar().drawSystem(); //drawing the system
+                        showmove = true;
                         loadBackground();
                         galaxy.GetMap(offsetx, offsety);
-                        showmove = true;
                     }
                     catch
                     {
-                        Console.Clear();
                         galaxy.GetMap(offsetx, offsety);
                         show = true;
                         showmove = true;
@@ -320,23 +318,6 @@ namespace HorizonSeason1
         public static void loadBackground()
         {
 
-        }
-
-        public static void choose(int offsetx, int offsety)
-        {
-            //show a chosen planet
-            Console.Clear();
-
-            offsety = Console.WindowHeight / 2;
-
-            Star star = galaxy.Getstar();
-
-            Console.WriteLine("in choose:\n" + star.GetInfo());
-
-            star.drawSystem(offsetx, offsety);
-
-            Console.ReadKey();
-            Console.Clear();
         }
 
         static void blink()
