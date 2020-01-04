@@ -212,7 +212,7 @@ namespace HorizonSeason1
             Console.WriteLine("\n\n                              density of galaxy:");
             int dense = Menu(width, 3, mapdensity);
 
-
+            Random rand = new Random();
             Console.Clear();
 
             Console.WriteLine("\n\nchoose a life form:");
@@ -223,7 +223,7 @@ namespace HorizonSeason1
             Console.Clear();
             Console.WriteLine("creating a new galaxy...\n");
 
-            Random rand = new Random();
+            
 
             galaxy = new Galaxy(difficulty, size, dense, rand);
 
@@ -317,6 +317,7 @@ namespace HorizonSeason1
                 }
             }
         }
+
         public static void escape()
         {
             Console.Clear();
@@ -338,10 +339,13 @@ namespace HorizonSeason1
                                         │                                                    │
                                         └────────────────────────────────────────────────────┘");
 
-            string[] options = {"Back", "Options", "Exit"};
+            string[] options = {"Back","Credits" , "Options", "Exit"};
             switch (Menu(62, 11, options, false, true))
             {
                 case 2:
+                    Credits();
+                    break;
+                case 3:
                     Environment.Exit(0);
                     break;
             }

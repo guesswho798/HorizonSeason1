@@ -12,6 +12,7 @@ namespace HorizonSeason1
         private int s;
         private int numOfStars;
         private Star[] xy;
+        private LifeForm[] lifeForms;
 
         public int S { get => s; set => s = value; }
 
@@ -91,21 +92,26 @@ namespace HorizonSeason1
             this.s = size;
 
             stars = new Star[size, size / 2];
-
-            int numOfStars = rand.Next(y, x);
-            this.numOfStars = numOfStars;
-            this.xy = new Star[numOfStars];
+            this.numOfStars = rand.Next(y, x);
             int homeStar = rand.Next(2, numOfStars - 1);
 
-            Console.WriteLine("max: " + numOfStars);
+            //creating life forms in the galaxy
+            this.lifeForms = new LifeForm[rand.Next(3, numOfStars / 2)];
+            for (int i = 0; i < lifeForms.Length; i++)
+            {
+                lifeForms[i] = new LifeForm(rand);
+            }
+            int counterLifForms = 0;
+
+            Console.WriteLine("max: " + this.numOfStars);
             Console.WriteLine("home: " + homeStar);
 
             int counter = 0;
             while (counter <= numOfStars)
             {
-                for (int y = 0; y < size / 2; y++)
+                for (int y = 0; y < stars.GetLength(1); y++)
                 {
-                    for (int x = 0; x < size; x++)
+                    for (int x = 0; x < stars.GetLength(0); x++)
                     {
                         //making sure im not placing 2 planets on each pther
                         try
@@ -116,10 +122,20 @@ namespace HorizonSeason1
                         {
                             if (rand.Next(0, 100) == 0)
                             {
-                                counter++;
                                 if (counter != homeStar)
                                 {
-                                    stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter);
+                                    //craeting a star inhabited by other life form
+                                    if (rand.Next(0, 3) == 0 && counterLifForms < lifeForms.Length)
+                                    {
+                                        //the first rand is for what star it whould be and the secound rand is for how many planets will be
+                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, lifeForms[counterLifForms]);
+                                        counterLifForms++;
+                                    }
+                                    else
+                                    {
+                                         //the first rand is for what star it whould be and the secound rand is for how many planets will be
+                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter);
+                                    }
                                 }
                                 else
                                 {
@@ -128,6 +144,7 @@ namespace HorizonSeason1
                                     cx = x;
                                     cy = y;
                                 }
+                                counter++;
                             }
                         }
                         if (counter > numOfStars)
@@ -139,6 +156,7 @@ namespace HorizonSeason1
             }
 
             //inserting all stars into an easier and readable map
+            this.xy = new Star[numOfStars];
             int counter1 = 0;
             for (int y = 0; y < s / 2; y++)
             {
@@ -156,6 +174,9 @@ namespace HorizonSeason1
                     { }
                 }
             }
+
+
+            
         }
 
         public void info()

@@ -11,7 +11,7 @@ namespace HorizonSeason1
         private string name = "";
         private string description;
         private bool homeStar; //if this star is the home system
-        private int counter; //?
+        private int counter; //id number of the star
         private bool astroidbelt; //weather the planet is soraunded by an astroid belt
         private int x; //galaxy map x
         private int y; //galaxy map y
@@ -22,6 +22,7 @@ namespace HorizonSeason1
 
         public int Radius { get => radius; set => radius = value; }
         public Planet[] Planets { get => planets; set => planets = value; }
+        public bool HomeStar { get => homeStar; set => homeStar = value; }
 
         public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, bool homeStar = false)
         {
@@ -135,6 +136,8 @@ namespace HorizonSeason1
                 positionstaken[a] = 999;
             }
 
+            //choosing home planet. not effection anything if this star is not home star
+            int homePlanet = rand.Next(0, planets.Length);
 
             //which planets
             for (int i = 0; i < planets.Length; i++)
@@ -144,7 +147,7 @@ namespace HorizonSeason1
                 array[1] = rand.Next(1, 18);
                 array[2] = rand.Next(2, 4);
 
-
+                //giving position
                 bool taken;
                 do
                 {
@@ -153,7 +156,7 @@ namespace HorizonSeason1
 
                     for (int a = 0; a < planets.Length; a++)
                     {
-                        if (positionstaken[a] == positionstaken[i] && a != i)
+                        if (positionstaken[a] == positionstaken[i] && a != i) //if position is all ready taken
                         {
                             taken = true;
                         }
@@ -161,7 +164,12 @@ namespace HorizonSeason1
                 }
                 while (taken == true);
 
-                planets[i] = new Planet(homeStar, array, radius, rand, positionstaken[i]);
+                
+                if (this.homeStar)
+                    planets[i] = new Planet(i == homePlanet, array, radius, rand, positionstaken[i]);
+                else
+                    planets[i] = new Planet(false, array, radius, rand, positionstaken[i]);
+
             }
 
             //sort planets with their position
@@ -180,7 +188,152 @@ namespace HorizonSeason1
                 case "White Dwarf": radius = 3; break;
             }
         }
-        
+        public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, LifeForm life)
+        {
+            this.homeStar = false;
+            this.counter = counter;
+
+            //which star
+            if (difficulty == 0 && id <= 19 || difficulty == 1 && id <= 7 || difficulty == 2 && id <= 7)
+            {
+                name = "White Sun";
+                description = "A star with heavy hydrogen content. There may be some easily colonizable planets, but a better probability of planets that are slightly more difficult to colonize.Gas Giants are very rare.";
+            }
+            else if (difficulty == 0 && id >= 20 && id <= 39 || difficulty == 1 && id >= 8 && id <= 20 || difficulty == 2 && id >= 8 && id <= 15)
+            {
+                name = "Yellow Sun";
+                description = "A star whose heat is average -- for a blazing ball of nuclear fusion. There is a high probability of finding planets that require minimal research to colonize. Gas Giants are very rare.";
+            }
+            else if (difficulty == 0 && id >= 40 && id <= 52 || difficulty == 1 && id >= 21 && id <= 40 || difficulty == 2 && id >= 16 && id <= 22)
+            {
+                name = "Blue Sun";
+                description = "Among the hottest and brightest of all stars. Warmer, drier planets are common; easily colonizable planets are less common";
+            }
+            else if (difficulty == 0 && id >= 53 && id <= 65 || difficulty == 1 && id >= 41 && id <= 60 || difficulty == 2 && id >= 23 && id <= 29)
+            {
+                name = "Protostar";
+                description = "A young star that is weak and cold; little more than a dense molecular cloud.Colder, drier planets are common; easily colonizable plantets are rare.There is a slightly better chance of finding Gas Giants.";
+            }
+            else if (difficulty == 0 && id >= 66 && id <= 78 || difficulty == 1 && id >= 61 && id <= 72 || difficulty == 2 && id >= 30 && id <= 43)
+            {
+                name = "Red Supergiant";
+                description = "A very large star in terms of volume, though not massive, and relatively cool. It is unlikely to have either easily colonizable planets or Gas Giants.";
+            }
+            else if (difficulty == 0 && id >= 79 && id <= 86 || difficulty == 1 && id >= 73 && id <= 84 || difficulty == 2 && id >= 44 && id <= 65)
+            {
+                name = "Binary";
+                description = "A system of two stars orbiting around their common barycenter. Dry, hot, and rocky planets are more common, and rarely Gas Giants.";
+            }
+            else if (difficulty == 0 && id >= 87 && id <= 92 || difficulty == 1 && id >= 85 && id <= 92 || difficulty == 2 && id >= 66 && id <= 87)
+            {
+                name = "Red Dwarf";
+                description = "A relatively small and cool star that is long-lived. Easily colonizable planets are very rare; less hospitable planets are common. there is a greater chance of Gas Giants.";
+            }
+            else if (difficulty == 0 && id >= 93 || difficulty == 1 && id >= 93 || difficulty == 2 && id >= 88)
+            {
+                name = "White Dwarf";
+                description = "A very small, very old, very dense and very weak star near the end of its life. The less easily colonizable rocky planets are more common here, and gas may be found";
+            }
+
+            //number of planets
+            if (numofplanets == 0 && num <= 16 || numofplanets == 1 && num <= 8)
+            {
+                this.planets = new Planet[1];
+            }
+            else if (numofplanets == 0 && num >= 17 && num <= 41 || numofplanets == 1 && num >= 9 && num <= 25 || numofplanets == 2 && num <= 9)
+            {
+                this.planets = new Planet[2];
+            }
+            else if (numofplanets == 0 && num >= 42 && num <= 67 || numofplanets == 1 && num >= 26 && num <= 51 || numofplanets == 2 && num >= 10 && num <= 28)
+            {
+                this.planets = new Planet[3];
+            }
+            else if (numofplanets == 0 && num >= 68 && num <= 84 || numofplanets == 1 && num >= 52 && num <= 77 || numofplanets == 2 && num >= 29 && num <= 45)
+            {
+                this.planets = new Planet[4];
+            }
+            else if (numofplanets == 0 && num >= 85 && num <= 93 || numofplanets == 1 && num >= 78 && num <= 93 || numofplanets == 2 && num >= 46 && num <= 73)
+            {
+                this.planets = new Planet[5];
+            }
+            else if (numofplanets == 0 && num >= 94 || numofplanets == 1 && num >= 94 || numofplanets == 2 && num >= 74)
+            {
+                this.planets = new Planet[6];
+            }
+
+
+            //randing an astroid belt
+            if (rand.Next(0, 4) == 0)
+            {
+                astroidbelt = true;
+            }
+            else
+            {
+                astroidbelt = false;
+            }
+
+            int[] positionstaken = new int[planets.Length];
+            for (int a = 0; a < positionstaken.Length; a++)
+            {
+                positionstaken[a] = 999;
+            }
+
+            //choosing home planet. not effection anything if this star is not home star
+            int homePlanet = rand.Next(0, planets.Length);
+
+            //which planets
+            for (int i = 0; i < planets.Length; i++)
+            {
+                int[] array = new int[3];
+                array[0] = rand.Next(1, 11);
+                array[1] = rand.Next(1, 18);
+                array[2] = rand.Next(2, 4);
+
+                //giving position
+                bool taken;
+                do
+                {
+                    taken = false;
+                    positionstaken[i] = rand.Next(0, 8);
+
+                    for (int a = 0; a < planets.Length; a++)
+                    {
+                        if (positionstaken[a] == positionstaken[i] && a != i) //if position is all ready taken
+                        {
+                            taken = true;
+                        }
+                    }
+                }
+                while (taken == true);
+
+                //if the life form should take this planet
+                if (i == homePlanet)
+                {
+                    life.addPlanet(planets[i]);
+                    planets[i] = new Planet(array, radius, rand, positionstaken[i], life);
+                }
+                else
+                    planets[i] = new Planet(false, array, radius, rand, positionstaken[i]); //empty planet
+
+            }
+
+            //sort planets with their position
+            this.Planets = planets.OrderBy(c => c.Position).ToArray();
+
+            //setting radius
+            switch (name)
+            {
+                case "White Sun": radius = 4; break;
+                case "Yellow Sun": radius = 4; break;
+                case "Blue Sun": radius = 4; break;
+                case "Protostar": radius = 4; break;
+                case "Red Supergiant": radius = 5; break;
+                case "Binary": radius = 4; break;
+                case "Red Dwarf": radius = 3; break;
+                case "White Dwarf": radius = 3; break;
+            }
+        }
+
         public void drawstar(int offsetx, int offsety)
         {
             double r = radius;
@@ -446,6 +599,7 @@ namespace HorizonSeason1
         }
         public void drawUI(int selected)
         {
+            #region lines
             Planet selectedP = planets[selected];
             for (int i = 0; i < Console.WindowHeight; i++)
             {
@@ -469,9 +623,6 @@ namespace HorizonSeason1
             Console.WriteLine("────────────────────────────────────────────────────────────────────────────────────────────────────");
             Console.Write(GetInfo());
 
-            Console.SetCursorPosition(105, 1);
-            Console.WriteLine(selectedP.TypeName);
-
             string underline = "";
             for (int i = 0; i < selectedP.TypeName.Length; i++)
             {
@@ -479,19 +630,24 @@ namespace HorizonSeason1
             }
             Console.SetCursorPosition(105, 2);
             Console.WriteLine(underline);
+            #endregion
 
-            
-            Console.SetCursorPosition(105, 4);
-            if (selectedP.TypeName != "Destroyed Planet")
-                Console.WriteLine("Population: " + selectedP.Pops);
-            else
-                Console.WriteLine("Search");
+            Console.SetCursorPosition(105, 1);
+            Console.WriteLine(selectedP.TypeName);
 
 
-            if (selectedP.Owened)
+            if (selectedP.TypeName == "Destroyed Planet")
             {
-                Console.SetCursorPosition(105, 6);
+                Console.SetCursorPosition(105, 4);
+                Console.WriteLine("Search");
+            }
+            else if (selectedP.PlayerOwned)
+            {
+                Console.SetCursorPosition(105, 4);
                 Console.WriteLine("Max population: " + selectedP.MaxPop);
+
+                Console.SetCursorPosition(105, 6);
+                Console.WriteLine("Population: " + selectedP.Pops);
 
                 Console.SetCursorPosition(105, 8);
                 Console.WriteLine("Production: None");
@@ -508,16 +664,34 @@ namespace HorizonSeason1
                 Console.SetCursorPosition(105, 16);
                 Console.WriteLine("Decisions");
             }
-            else if (selectedP.TypeName != "Destroyed Planet")
+            else if (selectedP.CreatureOwned)
             {
+                Console.SetCursorPosition(105, 4);
+                Console.WriteLine("Species: " + selectedP.Life.Name);
+
                 Console.SetCursorPosition(105, 6);
-                Console.WriteLine("Attack");
+                Console.WriteLine("Population: " + selectedP.Pops);
 
                 Console.SetCursorPosition(105, 8);
-                Console.WriteLine("Trade");
+                Console.WriteLine("Attack");
 
                 Console.SetCursorPosition(105, 10);
+                Console.WriteLine("Trade");
+
+                Console.SetCursorPosition(105, 12);
                 Console.WriteLine("Talk");
+            }
+            else
+            {
+                //empty planet
+                Console.SetCursorPosition(105, 4);
+                Console.WriteLine("Empty planet");
+
+                Console.SetCursorPosition(105, 6);
+                Console.WriteLine("Conquer");
+
+                Console.SetCursorPosition(105, 8);
+                Console.WriteLine("Visit");
             }
         }
         public void menuUI(int selected)
@@ -525,7 +699,8 @@ namespace HorizonSeason1
             Planet selectedP = planets[selected];
             if (selectedP.TypeName == "Destroyed Planet")
             {
-                Console.ForegroundColor = ConsoleColor.Red;
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.Black;
                 Console.SetCursorPosition(105, 4);
                 Console.WriteLine("Search");
 
@@ -538,9 +713,12 @@ namespace HorizonSeason1
                     Console.ReadKey();
                 }
 
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
+
                 Console.Clear();
             }
-            else if (selectedP.Owened)
+            else if (selectedP.PlayerOwned)
             {
                 int selector = 14;
                 string[] options = new string[17];
@@ -549,30 +727,32 @@ namespace HorizonSeason1
                 while (true)
                 {
                     //drawing
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Black;
                     Console.SetCursorPosition(105, selector);
-                    Console.WriteLine(options[selector]);
+                    Console.Write(options[selector]);
 
                     //reciving input
                     ConsoleKey key = Console.ReadKey().Key;
 
                     //"deleting" trace
+                    Console.BackgroundColor = ConsoleColor.Black;
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.SetCursorPosition(105, selector);
-                    Console.WriteLine(options[selector]);
+                    Console.Write(options[selector] + " ");
 
                     //logic
-                    if (key == ConsoleKey.S || key == ConsoleKey.DownArrow)
+                    if (key == ConsoleKey.DownArrow)
                     {
                         selector += 2;
                         if (selector == 18)
                             selector = 14;
                     }
-                    else if (key == ConsoleKey.W || key == ConsoleKey.UpArrow)
+                    else if (key == ConsoleKey.UpArrow)
                     {
                         selector -= 2;
                         if (selector == 12)
-                            selector = 18;
+                            selector = 16;
                     }
                     else if (key == ConsoleKey.Enter)
                     {
@@ -585,40 +765,43 @@ namespace HorizonSeason1
                     }
                 }
             }
-            else if (!selectedP.Owened)
+            else if (selectedP.CreatureOwned)
             {
-                int selector = 6;
-                string[] options = new string[11];
-                options[6] = "Attack";
-                options[8] = "Trade";
-                options[10] = "Talk";
+                int selector = 8;
+                string[] options = new string[13];
+                options[8] = "Attack";
+                options[10] = "Trade";
+                options[12] = "Talk";
+
                 while (true)
                 {
                     //drawing
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Black;
                     Console.SetCursorPosition(105, selector);
-                    Console.WriteLine(options[selector]);
+                    Console.Write(options[selector]);
 
                     //reciving input
                     ConsoleKey key = Console.ReadKey().Key;
 
                     //"deleting" trace
+                    Console.BackgroundColor = ConsoleColor.Black;
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.SetCursorPosition(105, selector);
-                    Console.WriteLine(options[selector]);
+                    Console.Write(options[selector] + " ");
 
                     //logic
                     if (key == ConsoleKey.S || key == ConsoleKey.DownArrow)
                     {
                         selector += 2;
-                        if (selector == 12)
-                            selector = 6;
+                        if (selector == 14)
+                            selector = 8;
                     }
                     else if (key == ConsoleKey.W || key == ConsoleKey.UpArrow)
                     {
                         selector -= 2;
-                        if (selector == 4)
-                            selector = 10;
+                        if (selector == 6)
+                            selector = 12;
                     }
                     else if (key == ConsoleKey.Enter)
                     {
@@ -631,11 +814,73 @@ namespace HorizonSeason1
                     }
                 }
             }
+            else
+            {
+                //empty planet
+                int selector = 6;
+                string[] options = new string[9];
+                options[6] = "Conquer";
+                options[8] = "Visit";
+                while (true)
+                {
+                    //drawing
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.SetCursorPosition(105, selector);
+                    Console.Write(options[selector]);
+
+                    //reciving input
+                    ConsoleKey key = Console.ReadKey().Key;
+
+                    //"deleting" trace
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.SetCursorPosition(105, selector);
+                    Console.Write(options[selector] + " ");
+
+                    //logic
+                    if (key == ConsoleKey.DownArrow)
+                    {
+                        selector += 2;
+                        if (selector == 10)
+                            selector = 6;
+                    }
+                    else if (key == ConsoleKey.UpArrow)
+                    {
+                        selector -= 2;
+                        if (selector == 4)
+                            selector = 8;
+                    }
+                    else if (key == ConsoleKey.Enter)
+                    {
+                        //later
+                        Console.WriteLine(options[selector]);
+                    }
+                    else if (key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
+                }
+            }
+            Console.Clear();
         }
         public void drawSystem()
         {
             rotateStar();
+
+            //initializing selector to start on a special planet
             int selector = 0;
+            for (int i = 0; i < planets.Length; i++)
+            {
+                if (planets[i].CreatureOwned)
+                    selector = i;
+            }
+            for (int i = 0; i < planets.Length; i++)
+            {
+                if (planets[i].PlayerOwned)
+                    selector = i;
+            }
+
             bool stay = true;
             while (stay)
             {

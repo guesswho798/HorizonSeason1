@@ -15,7 +15,9 @@ namespace HorizonSeason1
         private int size;
         private int pops = 0;
         private int position;
-        private bool owened;
+        private bool playerOwned;
+        private bool creatureOwned;
+        private LifeForm life;
 
         public string TypeName { get => typeName; set => typeName = value; }
         public int BaseHabitabilty { get => baseHabitabilty; set => baseHabitabilty = value; }
@@ -23,16 +25,19 @@ namespace HorizonSeason1
         public int Size { get => size; set => size = value; }
         public int Pops { get => pops; set => pops = value; }
         public int Position { get => position; set => position = value; }
-        public bool Owened { get => owened; set => owened = value; }
+        public bool CreatureOwned { get => creatureOwned; set => creatureOwned = value; }
+        public bool PlayerOwned { get => playerOwned; set => playerOwned = value; }
+        public LifeForm Life { get => life; set => life = value; }
 
         public Planet(bool homestar, int[] array, int radius, Random rand, int position)
         {
             string name = "";
             int habitabilty = 0;
+            this.creatureOwned = false;
 
             if (homestar == false)
             {
-                this.owened = false;
+                this.playerOwned = false;
                 if (array[0] < 3) //dead planet
                 {
                     name = "Destroyed Planet";
@@ -117,7 +122,8 @@ namespace HorizonSeason1
             else if (homestar == true)
             {
                 //first you need to add life forms
-                this.owened = true;
+                this.playerOwned = true;
+                pops = 1;
 
                 switch (rand.Next(0, 3))
                 {
@@ -162,6 +168,50 @@ namespace HorizonSeason1
 
             //randomise place in system
             this.Position = position;
+        }
+
+        public Planet(int[] array, int radius, Random rand, int position, LifeForm life)
+        {
+            this.playerOwned = false;
+            this.creatureOwned = true;
+            this.Position = position;
+            this.life = life;
+
+            //which planet
+            switch (rand.Next(0, 3))
+            {
+                case 0:
+                    typeName = "Gaia Planet";
+                    baseHabitabilty = 100;
+                    break;
+                case 1:
+                    TypeName = "Ocean Planet";
+                    baseHabitabilty = 80;
+                    break;
+                case 2:
+                    TypeName = "Temperate Planet";
+                    baseHabitabilty = 80;
+                    break;
+            }
+
+            //size and max population
+            this.size = array[2];
+            switch (size)
+            {
+                case 1:
+                    maxPop = 8;
+                    break;
+                case 2:
+                    maxPop = 10;
+                    break;
+                case 3:
+                    maxPop = 12;
+                    break;
+                case 4:
+                    maxPop = 15;
+                    break;
+            }
+            this.pops = rand.Next(1, this.maxPop / 2);
         }
 
         public void MovePlanet()
