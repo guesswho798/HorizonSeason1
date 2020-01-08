@@ -15,6 +15,7 @@ namespace HorizonSeason1
         private LifeForm[] lifeForms;
 
         public int S { get => s; set => s = value; }
+        public LifeForm[] LifeForms { get => lifeForms; set => lifeForms = value; }
 
         public Galaxy(int difficulty, int size, int dense, Random rand)
         {
@@ -155,6 +156,7 @@ namespace HorizonSeason1
                 }
             }
 
+
             //inserting all stars into an easier and readable map
             this.xy = new Star[numOfStars];
             int counter1 = 0;
@@ -187,7 +189,6 @@ namespace HorizonSeason1
             {
                 Console.WriteLine($"{i}: ({xy[i].getx()},{xy[i].gety()}). {xy[i].GetInfo()}");
             }
-
         }
 
         public void GetMap(int offsetx = 0, int offsety = 0)

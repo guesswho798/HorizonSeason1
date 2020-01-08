@@ -11,7 +11,7 @@ namespace HorizonSeason1
     {
         //there is a map for the stars but every other thing just has its own x and y just so things could go on each other
 
-            
+
         /// <summary>
         /// to do list
         /// constroctors
@@ -22,22 +22,7 @@ namespace HorizonSeason1
         ///ideas:
         ///pops adds 0.something every cycle and will cost food per billion and you can stop births at 2 per family --> happiness down but growth stops
         ///
-
-        //prices is an int array [Metals, Energy, Pops, Food, Happiness]
-        //life form's traits go in an int array [] (add when you know)
-
-        //Resources
-        public static int Metals;
-        public static int Energy;
-        public static int Food;
-        public static int Pops;
-        public static int Happiness;
-
-        public static fleet[] Fleet = new fleet[10];
-        public static Galaxy galaxy;
-
-        public static bool showmove = false;
-        public static bool show = true;
+        public static GameManager manager;
 
         static void Main()
         {
@@ -195,6 +180,8 @@ namespace HorizonSeason1
         {
             Console.Clear();
 
+            manager = new GameManager();
+
             string[] diff = { "1.easy (young galaxy)", "2.medium (normal galaxy)", "3.hard (old galaxy)" };
             int width = Console.WindowWidth / 2 - diff[0].Length / 2;
             Console.WriteLine("\n\n                                 game difficulty:");
@@ -223,9 +210,8 @@ namespace HorizonSeason1
             Console.Clear();
             Console.WriteLine("creating a new galaxy...\n");
 
-            
 
-            galaxy = new Galaxy(difficulty, size, dense, rand);
+            manager.Galaxy = new Galaxy(difficulty, size, dense, rand);
 
             Thread t = new Thread(blink);
             t.IsBackground = true;
@@ -233,23 +219,28 @@ namespace HorizonSeason1
 
             Console.Clear();
 
-            galaxy.info();
+            //galaxy.info();
 
-            Game(Console.WindowWidth / 2 - galaxy.S / 2, Console.WindowHeight - galaxy.S / 2 - 1);
+            Game(Console.WindowWidth / 2 - manager.Galaxy.S / 2, Console.WindowHeight - manager.Galaxy.S / 2 - 1);
         }
 
         public static void Game(int offsetx, int offsety)
         {
-            galaxy.GetMap(offsetx, offsety);
+            loadBackground(offsetx, offsety);
+            manager.Galaxy.GetMap(offsetx, offsety);
 
-            showmove = true;
-
+            manager.Showmove = true;
             while (true)
             {
                 Console.CursorVisible = false;
                 //fixing bug
                 setCur(0, 0);
                 Console.Write(" ");
+
+                //showing info of system
+                Console.ForegroundColor = ConsoleColor.White;
+                setCur(0, 1);
+                try { Console.WriteLine(manager.Galaxy.Getstar().GetInfo()); } catch { Console.WriteLine("                                                                                                                                                                                                                                           "); }
 
                 //stoping to read input
                 ConsoleKey key = Console.ReadKey(false).Key;
@@ -258,33 +249,33 @@ namespace HorizonSeason1
                 {
                     try
                     {
-                        galaxy.Getstarname(); //checking if place has a system
-                        showmove = false;
+                        manager.Galaxy.Getstarname(); //checking if place has a system
+                        manager.Showmove = false;
                         Console.Clear();
-                        galaxy.Getstar().drawSystem(); //drawing the system
-                        showmove = true;
-                        loadBackground();
-                        galaxy.GetMap(offsetx, offsety);
+                        manager.Galaxy.Getstar().drawSystem(); //drawing the system
+                        manager.Showmove = true;
+                        loadBackground(offsetx,offsety);
+                        manager.Galaxy.GetMap(offsetx, offsety);
                     }
                     catch
                     {
-                        galaxy.GetMap(offsetx, offsety);
-                        show = true;
-                        showmove = true;
+                        manager.Galaxy.GetMap(offsetx, offsety);
+                        manager.Show = true;
+                        manager.Showmove = true;
                     }
                 }
                 if (key == ConsoleKey.Escape)
                 {
                     escape();
-                    galaxy.GetMap(offsetx, offsety);
+                    manager.Galaxy.GetMap(offsetx, offsety);
                 }
 
                 //deleting trace
                 if (key == ConsoleKey.UpArrow || key == ConsoleKey.DownArrow || key == ConsoleKey.LeftArrow || key == ConsoleKey.RightArrow)
                 {
                     //deleting trace
-                    setCur(galaxy.Getx() + offsetx, galaxy.Gety() + offsety);
-                    switch (galaxy.Getstarname())
+                    setCur(manager.Galaxy.Getx() + offsetx, manager.Galaxy.Gety() + offsety);
+                    switch (manager.Galaxy.Getstarname())
                     {
                         case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.Write("*"); break;
                         case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("*"); break;
@@ -301,17 +292,17 @@ namespace HorizonSeason1
                 //moving player
                 switch (key)
                 {
-                    case ConsoleKey.UpArrow: if (galaxy.Gety() > 0) galaxy.Sety(galaxy.Gety() - 1); break;
-                    case ConsoleKey.DownArrow: if (galaxy.Gety() < galaxy.S / 2 - 1) galaxy.Sety(galaxy.Gety() + 1); break;
-                    case ConsoleKey.LeftArrow: if (galaxy.Getx() > 0) galaxy.Setx(galaxy.Getx() - 1); break;
-                    case ConsoleKey.RightArrow: if (galaxy.Getx() < galaxy.S - 1) galaxy.Setx(galaxy.Getx() + 1); break;
+                    case ConsoleKey.UpArrow: if (manager.Galaxy.Gety() > 0) manager.Galaxy.Sety(manager.Galaxy.Gety() - 1); break;
+                    case ConsoleKey.DownArrow: if (manager.Galaxy.Gety() < manager.Galaxy.S / 2 - 1) manager.Galaxy.Sety(manager.Galaxy.Gety() + 1); break;
+                    case ConsoleKey.LeftArrow: if (manager.Galaxy.Getx() > 0) manager.Galaxy.Setx(manager.Galaxy.Getx() - 1); break;
+                    case ConsoleKey.RightArrow: if (manager.Galaxy.Getx() < manager.Galaxy.S - 1) manager.Galaxy.Setx(manager.Galaxy.Getx() + 1); break;
                 }
 
 
                 //drawing the player
-                if (show == true)
+                if (manager.Show == true)
                 {
-                    setCur(galaxy.Getx() + offsetx, galaxy.Gety() + offsety);
+                    setCur(manager.Galaxy.Getx() + offsetx, manager.Galaxy.Gety() + offsety);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write("█");
                 }
@@ -321,7 +312,7 @@ namespace HorizonSeason1
         public static void escape()
         {
             Console.Clear();
-            showmove = false;
+            manager.Showmove = false;
             Console.Write(" ");
             setCur(0, 5);
             Console.WriteLine(@"
@@ -349,37 +340,66 @@ namespace HorizonSeason1
                     Environment.Exit(0);
                     break;
             }
-            showmove = true;
+            manager.Showmove = true;
             Console.Clear();
         }
 
-        public static void loadBackground()
+        public static void loadBackground(int offsetx, int offsety)
         {
+            setCur(offsetx - 1, offsety - 1);
+            string line = "┌";
+            for (int i = 0; i < manager.Galaxy.S; i++)
+            {
+                line += "─";
+            }
+            line += "┐";
+            Console.Write(line);
 
+            line = "│";
+            for (int j = 0; j < manager.Galaxy.S; j++)
+            {
+                line += " ";
+            }
+            line += "│";
+
+            for (int i = 0; i < manager.Galaxy.S / 2; i++)
+            {
+                setCur(offsetx - 1, offsety + i);
+                Console.Write(line);
+            }
+
+            setCur(offsetx - 1, Console.WindowHeight - 1);
+            line = "└";
+            for (int i = 0; i < manager.Galaxy.S; i++)
+            {
+                line += "─";
+            }
+            line += "┘";
+            Console.Write(line);
         }
 
         static void blink()
         {
-            int offsetx = Console.WindowWidth / 2 - galaxy.S / 2;
-            int offsety = Console.WindowHeight - galaxy.S / 2 - 1;
+            int offsetx = Console.WindowWidth / 2 - manager.Galaxy.S / 2;
+            int offsety = Console.WindowHeight - manager.Galaxy.S / 2 - 1;
 
             while (true)
             {
-                if (showmove) //making sure it wont blink in options
+                if (manager.Showmove) //making sure it wont blink in options
                 {
-                    setCur(galaxy.Getx() + offsetx, galaxy.Gety() + offsety);
+                    setCur(manager.Galaxy.Getx() + offsetx, manager.Galaxy.Gety() + offsety);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write("█");
-                    show = true;
+                    manager.Show = true;
                     setCur(50, 0);
                 }
 
                 Thread.Sleep(1000);
 
-                if (showmove) //making sure it wont blink in options
+                if (manager.Showmove) //making sure it wont blink in options
                 {
-                    setCur(galaxy.Getx() + offsetx, galaxy.Gety() + offsety);
-                    switch (galaxy.Getstarname())
+                    setCur(manager.Galaxy.Getx() + offsetx, manager.Galaxy.Gety() + offsety);
+                    switch (manager.Galaxy.Getstarname())
                     {
                         case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.Write("*"); break;
                         case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("*"); break;
@@ -392,7 +412,7 @@ namespace HorizonSeason1
                         default: Console.Write(" "); break;
                     }
                     Console.ForegroundColor = ConsoleColor.White;
-                    show = false;
+                    manager.Show = false;
 
                     setCur(50, 0);
                 }

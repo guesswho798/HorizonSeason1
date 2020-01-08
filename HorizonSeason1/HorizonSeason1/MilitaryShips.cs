@@ -31,11 +31,11 @@ namespace HorizonSeason1
 
         public void Add(int number, int fleetnumber)
         {
-            if (this.prices[0] * number <= Program.Metals || this.prices[1] * number <= Program.Energy)
+            if (this.prices[0] * number <= Program.manager.Metals || this.prices[1] * number <= Program.manager.Energy)
             {
-                Program.Metals -= prices[0] * number;
-                Program.Energy -= prices[1] * number;
-                Program.Fleet[fleetnumber].add(shipid, number, damage, hp, shield);
+                Program.manager.Metals -= prices[0] * number;
+                Program.manager.Energy -= prices[1] * number;
+                Program.manager.Fleet[fleetnumber].add(shipid, number, damage, hp, shield);
             }
         }
 

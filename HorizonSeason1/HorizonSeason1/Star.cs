@@ -164,7 +164,7 @@ namespace HorizonSeason1
                 }
                 while (taken == true);
 
-                
+
                 if (this.homeStar)
                     planets[i] = new Planet(i == homePlanet, array, radius, rand, positionstaken[i]);
                 else
@@ -184,7 +184,7 @@ namespace HorizonSeason1
                 case "Protostar": radius = 4; break;
                 case "Red Supergiant": radius = 5; break;
                 case "Binary": radius = 4; break;
-                case "Red Dwarf":  radius = 3; break;
+                case "Red Dwarf": radius = 3; break;
                 case "White Dwarf": radius = 3; break;
             }
         }
@@ -334,6 +334,7 @@ namespace HorizonSeason1
             }
         }
 
+        //drawing and logic
         public void drawstar(int offsetx, int offsety)
         {
             double r = radius;
@@ -353,7 +354,7 @@ namespace HorizonSeason1
 
             double r_in = r - 0.0;
             double r_out = r + 0.1;
-            
+
             offsety -= Convert.ToInt32(r);
 
             this.sx = offsetx;
@@ -621,7 +622,33 @@ namespace HorizonSeason1
 
             Console.SetCursorPosition(0, 31);
             Console.WriteLine("────────────────────────────────────────────────────────────────────────────────────────────────────");
-            Console.Write(GetInfo());
+            if (selectedP.PlayerOwned)
+                Console.WriteLine("Metals: " + Program.manager.Metals + ", Energy: " + Program.manager.Energy + ", Food: " + Program.manager.Food);
+            Console.WriteLine(GetInfo());
+
+            if (selectedP.PlayerOwned)
+            {
+                Console.WriteLine("Max population: " + selectedP.MaxPop);
+
+                Console.WriteLine("Population: " + selectedP.Pops);
+
+                Console.WriteLine("Production: None");
+
+                Console.WriteLine("Buildings: ");
+
+                Console.Write("Build queue: " + selectedP.GetQueue());
+            }
+            else if (selectedP.CreatureOwned)
+            {
+                Console.WriteLine("\nSpecies: " + selectedP.Life.Name);
+
+                Console.WriteLine("Population: " + selectedP.Pops);
+            }
+            else if (selectedP.TypeName != "Destroyed Planet")
+            {
+                Console.WriteLine("\nEmpty planet");
+            }
+
 
             string underline = "";
             for (int i = 0; i < selectedP.TypeName.Length; i++)
@@ -644,53 +671,29 @@ namespace HorizonSeason1
             else if (selectedP.PlayerOwned)
             {
                 Console.SetCursorPosition(105, 4);
-                Console.WriteLine("Max population: " + selectedP.MaxPop);
-
-                Console.SetCursorPosition(105, 6);
-                Console.WriteLine("Population: " + selectedP.Pops);
-
-                Console.SetCursorPosition(105, 8);
-                Console.WriteLine("Production: None");
-
-                Console.SetCursorPosition(105, 10);
-                Console.WriteLine("Buildings: ");
-
-                Console.SetCursorPosition(105, 12);
-                Console.WriteLine("Build queue: ");
-
-                Console.SetCursorPosition(105, 14);
                 Console.WriteLine("Build");
 
-                Console.SetCursorPosition(105, 16);
+                Console.SetCursorPosition(105, 6);
                 Console.WriteLine("Decisions");
             }
             else if (selectedP.CreatureOwned)
             {
                 Console.SetCursorPosition(105, 4);
-                Console.WriteLine("Species: " + selectedP.Life.Name);
-
-                Console.SetCursorPosition(105, 6);
-                Console.WriteLine("Population: " + selectedP.Pops);
-
-                Console.SetCursorPosition(105, 8);
                 Console.WriteLine("Attack");
 
-                Console.SetCursorPosition(105, 10);
+                Console.SetCursorPosition(105, 6);
                 Console.WriteLine("Trade");
 
-                Console.SetCursorPosition(105, 12);
+                Console.SetCursorPosition(105, 8);
                 Console.WriteLine("Talk");
             }
             else
             {
                 //empty planet
                 Console.SetCursorPosition(105, 4);
-                Console.WriteLine("Empty planet");
-
-                Console.SetCursorPosition(105, 6);
                 Console.WriteLine("Conquer");
 
-                Console.SetCursorPosition(105, 8);
+                Console.SetCursorPosition(105, 6);
                 Console.WriteLine("Visit");
             }
         }
@@ -720,107 +723,11 @@ namespace HorizonSeason1
             }
             else if (selectedP.PlayerOwned)
             {
-                int selector = 14;
-                string[] options = new string[17];
-                options[14] = "Build";
-                options[16] = "Decisions";
-                while (true)
-                {
-                    //drawing
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(105, selector);
-                    Console.Write(options[selector]);
-
-                    //reciving input
-                    ConsoleKey key = Console.ReadKey().Key;
-
-                    //"deleting" trace
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.SetCursorPosition(105, selector);
-                    Console.Write(options[selector] + " ");
-
-                    //logic
-                    if (key == ConsoleKey.DownArrow)
-                    {
-                        selector += 2;
-                        if (selector == 18)
-                            selector = 14;
-                    }
-                    else if (key == ConsoleKey.UpArrow)
-                    {
-                        selector -= 2;
-                        if (selector == 12)
-                            selector = 16;
-                    }
-                    else if (key == ConsoleKey.Enter)
-                    {
-                        //later
-                        Console.WriteLine(options[selector]);
-                    }
-                    else if (key == ConsoleKey.Escape)
-                    {
-                        break;
-                    }
-                }
-            }
-            else if (selectedP.CreatureOwned)
-            {
-                int selector = 8;
-                string[] options = new string[13];
-                options[8] = "Attack";
-                options[10] = "Trade";
-                options[12] = "Talk";
-
-                while (true)
-                {
-                    //drawing
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(105, selector);
-                    Console.Write(options[selector]);
-
-                    //reciving input
-                    ConsoleKey key = Console.ReadKey().Key;
-
-                    //"deleting" trace
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.SetCursorPosition(105, selector);
-                    Console.Write(options[selector] + " ");
-
-                    //logic
-                    if (key == ConsoleKey.S || key == ConsoleKey.DownArrow)
-                    {
-                        selector += 2;
-                        if (selector == 14)
-                            selector = 8;
-                    }
-                    else if (key == ConsoleKey.W || key == ConsoleKey.UpArrow)
-                    {
-                        selector -= 2;
-                        if (selector == 6)
-                            selector = 12;
-                    }
-                    else if (key == ConsoleKey.Enter)
-                    {
-                        //later
-                        Console.WriteLine(options[selector]);
-                    }
-                    else if (key == ConsoleKey.Escape)
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                //empty planet
-                int selector = 6;
+                int selector = 4;
                 string[] options = new string[9];
-                options[6] = "Conquer";
-                options[8] = "Visit";
+                options[4] = "Build";
+                options[6] = "Decisions";
+                options[8] = "Back";
                 while (true)
                 {
                     //drawing
@@ -843,20 +750,129 @@ namespace HorizonSeason1
                     {
                         selector += 2;
                         if (selector == 10)
-                            selector = 6;
+                            selector = 4;
                     }
                     else if (key == ConsoleKey.UpArrow)
                     {
                         selector -= 2;
+                        if (selector == 2)
+                            selector = 8;
+                    }
+                    else if (key == ConsoleKey.Enter)
+                    {
                         if (selector == 4)
+                            build(selectedP);
+                        else if (selector == 6)
+                            Decisions();
+                        else if (selector == 8)
+                            break;
+                        drawUI(selected);
+                    }
+                    else if (key == ConsoleKey.Escape || key == ConsoleKey.RightArrow || key == ConsoleKey.LeftArrow)
+                    {
+                        break;
+                    }
+                }
+            }
+            else if (selectedP.CreatureOwned)
+            {
+                int selector = 4;
+                string[] options = new string[11];
+                options[4] = "Attack";
+                options[6] = "Trade";
+                options[8] = "Talk";
+                options[10] = "Back";
+
+                while (true)
+                {
+                    //drawing
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.SetCursorPosition(105, selector);
+                    Console.Write(options[selector]);
+
+                    //reciving input
+                    ConsoleKey key = Console.ReadKey().Key;
+
+                    //"deleting" trace
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.SetCursorPosition(105, selector);
+                    Console.Write(options[selector] + " ");
+
+                    //logic
+                    if (key == ConsoleKey.S || key == ConsoleKey.DownArrow)
+                    {
+                        selector += 2;
+                        if (selector == 12)
+                            selector = 4;
+                    }
+                    else if (key == ConsoleKey.W || key == ConsoleKey.UpArrow)
+                    {
+                        selector -= 2;
+                        if (selector == 2)
+                            selector = 10;
+                    }
+                    else if (key == ConsoleKey.Enter)
+                    {
+                        //later
+                        if (selector == 10)
+                            break;
+                        Console.WriteLine(options[selector]);
+                    }
+                    else if (key == ConsoleKey.Escape || key == ConsoleKey.RightArrow || key == ConsoleKey.LeftArrow)
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                //empty planet
+                int selector = 4;
+                string[] options = new string[9];
+                options[4] = "Conquer";
+                options[6] = "Visit";
+                options[8] = "Back";
+
+                while (true)
+                {
+                    //drawing
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.SetCursorPosition(105, selector);
+                    Console.Write(options[selector]);
+
+                    //reciving input
+                    ConsoleKey key = Console.ReadKey().Key;
+
+                    //"deleting" trace
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.SetCursorPosition(105, selector);
+                    Console.Write(options[selector] + " ");
+
+                    //logic
+                    if (key == ConsoleKey.DownArrow)
+                    {
+                        selector += 2;
+                        if (selector == 10)
+                            selector = 4;
+                    }
+                    else if (key == ConsoleKey.UpArrow)
+                    {
+                        selector -= 2;
+                        if (selector == 2)
                             selector = 8;
                     }
                     else if (key == ConsoleKey.Enter)
                     {
                         //later
+                        if (selector == 8)
+                            break;
                         Console.WriteLine(options[selector]);
                     }
-                    else if (key == ConsoleKey.Escape)
+                    else if (key == ConsoleKey.Escape || key == ConsoleKey.RightArrow || key == ConsoleKey.LeftArrow)
                     {
                         break;
                     }
@@ -866,7 +882,11 @@ namespace HorizonSeason1
         }
         public void drawSystem()
         {
-            rotateStar();
+            //rotating planets
+            for (int i = 0; i < planets.Length; i++)
+            {
+                planets[i].MovePlanet();
+            }
 
             //initializing selector to start on a special planet
             int selector = 0;
@@ -922,14 +942,22 @@ namespace HorizonSeason1
                 Console.Clear();
             }
         }
-        public void rotateStar()
+        public void build(Planet p)
         {
-            for (int i = 0; i < planets.Length; i++)
-            {
-                planets[i].MovePlanet();
-            }
-        }
+            string[] options = new string[Program.manager.stringBuildingsName().Length + 1];
+            options = Program.manager.stringBuildingsName();
+            options[options.Length - 1] = "Back";
+            int selector = Program.Menu(105, 4, options, false);
 
+            if (selector != options.Length - 1 && Program.manager.Planetbuildings[selector].build())
+                p.addQueue(Program.manager.Planetbuildings[selector]);
+
+        }
+        public void Decisions()
+        {
+
+        }
+        //values
         public int getx()
         {
             return x;
@@ -946,7 +974,6 @@ namespace HorizonSeason1
         {
             this.y = y;
         }
-
         public string getName()
         {
             return name;
@@ -961,17 +988,30 @@ namespace HorizonSeason1
         }
         public string GetInfo()
         {
-            string pla = "";
-            //creating string that has all planets names
-            for (int i = 0; i < planets.Length; i++)
+            try
             {
-                pla += planets[i].TypeName;
-                if (i != planets.Length - 1)
+                string pla = "";
+                string form = "";
+                //creating string that has all planets names
+                for (int i = 0; i < planets.Length; i++)
                 {
-                    pla += ", ";
+                    if (planets[i].CreatureOwned)
+                        form = planets[i].Life.Name;
+                    pla += planets[i].TypeName;
+                    if (i != planets.Length - 1)
+                    {
+                        pla += ", ";
+                    }
                 }
+                if (form == "")
+                    return name + " - home star = " + homeStar + ", anstroid belt = " + astroidbelt + "\n[" + pla + "]";
+                else
+                    return name + " - Life form = " + form + ", anstroid belt = " + astroidbelt + "\n[" + pla + "]";
             }
-            return name + " - home star = " + homeStar + ", anstroid belt = " + astroidbelt + "\n[" + pla + "]";
+            catch
+            {
+                return "";
+            }
         }
     }
 }

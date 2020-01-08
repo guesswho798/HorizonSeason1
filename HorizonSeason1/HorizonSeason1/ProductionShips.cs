@@ -18,11 +18,11 @@ namespace HorizonSeason1
 
         public ProductionShips(string name, string description, int[] prices, int hp, int shield, int number)
         {
-            if (prices[0] * number <= Program.Metals || prices[1] * number <= Program.Energy || prices[2] * number <= Program.Pops) //¯\_(ツ)_/¯ need to differentiate popswithing planets and overall
+            if (prices[0] * number <= Program.manager.Metals || prices[1] * number <= Program.manager.Energy || prices[2] * number <= Program.manager.Pops) //¯\_(ツ)_/¯ need to differentiate popswithing planets and overall
             {
-                Program.Metals -= prices[0] * number;
-                Program.Energy -= prices[1] * number;
-                Program.Pops -= prices[2] * number;
+                Program.manager.Metals -= prices[0] * number;
+                Program.manager.Energy -= prices[1] * number;
+                Program.manager.Pops -= prices[2] * number;
                 this.name = name;
                 this.description = description;
                 this.hp = hp;

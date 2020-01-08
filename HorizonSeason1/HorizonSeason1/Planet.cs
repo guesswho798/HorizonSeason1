@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace HorizonSeason1
 {
-    //add a home star planet chance from life form
     public class Planet
     {
         private string typeName;
@@ -18,6 +17,9 @@ namespace HorizonSeason1
         private bool playerOwned;
         private bool creatureOwned;
         private LifeForm life;
+        private PlanetBuildings[] buildings;
+        private PlanetBuildings[] buildingqueue;
+        
 
         public string TypeName { get => typeName; set => typeName = value; }
         public int BaseHabitabilty { get => baseHabitabilty; set => baseHabitabilty = value; }
@@ -34,6 +36,8 @@ namespace HorizonSeason1
             string name = "";
             int habitabilty = 0;
             this.creatureOwned = false;
+            buildingqueue = new PlanetBuildings[0];
+            buildings = new PlanetBuildings[0];
 
             if (homestar == false)
             {
@@ -176,6 +180,8 @@ namespace HorizonSeason1
             this.creatureOwned = true;
             this.Position = position;
             this.life = life;
+            buildingqueue = new PlanetBuildings[0];
+            buildings = new PlanetBuildings[0];
 
             //which planet
             switch (rand.Next(0, 3))
@@ -214,6 +220,32 @@ namespace HorizonSeason1
             this.pops = rand.Next(1, this.maxPop / 2);
         }
 
+
+        public string GetQueue()
+        {
+            string s = "";
+
+            for (int i = 0; i < buildingqueue.Length; i++)
+            {
+                s += buildingqueue[i].Name;
+                if (i != buildingqueue.Length - 1)
+                {
+                    s += ", ";
+                }
+            }
+
+            return s;
+        }
+        public void addQueue(PlanetBuildings b)
+        {
+            Array.Resize(ref buildingqueue, buildingqueue.Length + 1);
+            buildingqueue[buildingqueue.Length - 1] = b;
+        }
+        public void addbuilding(PlanetBuildings b)
+        {
+            Array.Resize(ref buildings, buildings.Length + 1);
+            buildings[buildings.Length - 1] = b;
+        }
         public void MovePlanet()
         {
             Position++;
