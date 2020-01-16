@@ -8,15 +8,26 @@ namespace HorizonSeason1
 {
     public class fleet
     {
-        int attackPoints = 0;
-        int hp = 0;
-        int shield = 0;
-        int[] ships = new int[7];
+        static int fleetId;
+        int attackPoints;
+        int hp;
+        int shield;
+        int numOfShips;
+        MilitaryShips[] ships = new MilitaryShips[7];
 
-
-        public void add(int id, int number, int attackPoints, int hp, int shield)
+        public fleet()
         {
-            ships[id] += number;
+            attackPoints = 0;
+            hp = 0;
+            shield = 0;
+            numOfShips = 0;
+            fleetId++;
+        }
+
+        public void add(MilitaryShips s ,int number, int attackPoints, int hp, int shield)
+        {
+            ships[numOfShips] = s;
+            this.numOfShips++;
             this.attackPoints += attackPoints * number;
             this.hp += hp * number;
             this.shield += shield * number;
@@ -40,7 +51,7 @@ namespace HorizonSeason1
             }
         }
 
-        public int[] GetInfoNumber()
+        public MilitaryShips[] GetInfoNumber()
         {
             return ships;
         }

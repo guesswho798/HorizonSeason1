@@ -16,6 +16,7 @@ namespace HorizonSeason1
 
         public int S { get => s; set => s = value; }
         public LifeForm[] LifeForms { get => lifeForms; set => lifeForms = value; }
+        public Star[] Xy { get => xy; set => xy = value; }
 
         public Galaxy(int difficulty, int size, int dense, Random rand)
         {

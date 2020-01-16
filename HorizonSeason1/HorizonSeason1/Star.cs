@@ -598,10 +598,109 @@ namespace HorizonSeason1
             }
             Console.ForegroundColor = ConsoleColor.White;
         }
-        public void drawUI(int selected)
+        public void drawUI(int selected, bool lines = true)
         {
-            #region lines
+            if (lines)
+                drawline();
+
             Planet selectedP = planets[selected];
+
+            Console.SetCursorPosition(0, 32);
+            if (selectedP.PlayerOwned)
+                Console.WriteLine("Metals: " + Program.manager.Metals + ", Energy: " + Program.manager.Energy + ", Food: " + Program.manager.Food + "              ");
+            Console.WriteLine(GetInfo());
+
+            string underline = "";
+            for (int i = 0; i < selectedP.TypeName.Length; i++)
+            {
+                underline += "─";
+            }
+            Console.SetCursorPosition(105, 2);
+            Console.WriteLine(underline);
+
+            //showing info
+            Console.SetCursorPosition(0, 35);
+            if (selectedP.PlayerOwned)
+            {
+                Console.WriteLine("Max population: " + selectedP.MaxPop);
+
+                Console.WriteLine("Population: " + selectedP.Pops);
+
+                if (selectedP.GetProduction() == "")
+                    Console.WriteLine("Production: None");
+                else
+                    Console.WriteLine("Production: " + selectedP.GetProduction());
+
+                if (selectedP.GetBuildings() == "")
+                    Console.WriteLine("Buildings: None");
+                else
+                    Console.WriteLine("Buildings: " + selectedP.GetBuildings());
+
+                if (selectedP.GetQueue() == "")
+                    Console.Write("Build queue: None");
+                else
+                    Console.Write("Build queue: " + selectedP.GetQueue());
+            }
+            else if (selectedP.CreatureOwned)
+            {
+                Console.WriteLine("\nSpecies: " + selectedP.Life.Name);
+
+                Console.WriteLine("Population: " + selectedP.Pops);
+            }
+            else if (selectedP.TypeName != "Destroyed Planet")
+            {
+                Console.WriteLine("Empty planet");
+            }
+
+            Console.SetCursorPosition(105, 1);
+            Console.WriteLine(selectedP.TypeName);
+
+            //menu part
+            if (selectedP.TypeName == "Destroyed Planet")
+            {
+                Console.SetCursorPosition(105, 4);
+                Console.WriteLine("Search");
+            }
+            else if (selectedP.PlayerOwned)
+            {
+                Console.SetCursorPosition(105, 4);
+                Console.WriteLine("Build");
+
+                Console.SetCursorPosition(105, 6);
+                Console.WriteLine("Decisions");
+
+                Console.SetCursorPosition(105, 8);
+                Console.WriteLine("Back");
+            }
+            else if (selectedP.CreatureOwned)
+            {
+                Console.SetCursorPosition(105, 4);
+                Console.WriteLine("Attack");
+
+                Console.SetCursorPosition(105, 6);
+                Console.WriteLine("Trade");
+
+                Console.SetCursorPosition(105, 8);
+                Console.WriteLine("Talk");
+
+                Console.SetCursorPosition(105, 10);
+                Console.WriteLine("Back");
+            }
+            else
+            {
+                //empty planet
+                Console.SetCursorPosition(105, 4);
+                Console.WriteLine("Conquer");
+
+                Console.SetCursorPosition(105, 6);
+                Console.WriteLine("Visit");
+
+                Console.SetCursorPosition(105, 8);
+                Console.WriteLine("Back");
+            }
+        }
+        public void drawline()
+        {
             for (int i = 0; i < Console.WindowHeight; i++)
             {
                 Console.SetCursorPosition(100, i);
@@ -622,80 +721,7 @@ namespace HorizonSeason1
 
             Console.SetCursorPosition(0, 31);
             Console.WriteLine("────────────────────────────────────────────────────────────────────────────────────────────────────");
-            if (selectedP.PlayerOwned)
-                Console.WriteLine("Metals: " + Program.manager.Metals + ", Energy: " + Program.manager.Energy + ", Food: " + Program.manager.Food);
-            Console.WriteLine(GetInfo());
-
-            if (selectedP.PlayerOwned)
-            {
-                Console.WriteLine("Max population: " + selectedP.MaxPop);
-
-                Console.WriteLine("Population: " + selectedP.Pops);
-
-                Console.WriteLine("Production: None");
-
-                Console.WriteLine("Buildings: ");
-
-                Console.Write("Build queue: " + selectedP.GetQueue());
-            }
-            else if (selectedP.CreatureOwned)
-            {
-                Console.WriteLine("\nSpecies: " + selectedP.Life.Name);
-
-                Console.WriteLine("Population: " + selectedP.Pops);
-            }
-            else if (selectedP.TypeName != "Destroyed Planet")
-            {
-                Console.WriteLine("\nEmpty planet");
-            }
-
-
-            string underline = "";
-            for (int i = 0; i < selectedP.TypeName.Length; i++)
-            {
-                underline += "─";
-            }
-            Console.SetCursorPosition(105, 2);
-            Console.WriteLine(underline);
-            #endregion
-
-            Console.SetCursorPosition(105, 1);
-            Console.WriteLine(selectedP.TypeName);
-
-
-            if (selectedP.TypeName == "Destroyed Planet")
-            {
-                Console.SetCursorPosition(105, 4);
-                Console.WriteLine("Search");
-            }
-            else if (selectedP.PlayerOwned)
-            {
-                Console.SetCursorPosition(105, 4);
-                Console.WriteLine("Build");
-
-                Console.SetCursorPosition(105, 6);
-                Console.WriteLine("Decisions");
-            }
-            else if (selectedP.CreatureOwned)
-            {
-                Console.SetCursorPosition(105, 4);
-                Console.WriteLine("Attack");
-
-                Console.SetCursorPosition(105, 6);
-                Console.WriteLine("Trade");
-
-                Console.SetCursorPosition(105, 8);
-                Console.WriteLine("Talk");
-            }
-            else
-            {
-                //empty planet
-                Console.SetCursorPosition(105, 4);
-                Console.WriteLine("Conquer");
-
-                Console.SetCursorPosition(105, 6);
-                Console.WriteLine("Visit");
-            }
+            
         }
         public void menuUI(int selected)
         {
@@ -718,8 +744,6 @@ namespace HorizonSeason1
 
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.White;
-
-                Console.Clear();
             }
             else if (selectedP.PlayerOwned)
             {
@@ -763,7 +787,7 @@ namespace HorizonSeason1
                         if (selector == 4)
                             build(selectedP);
                         else if (selector == 6)
-                            Decisions();
+                           Decisions();
                         else if (selector == 8)
                             break;
                         drawUI(selected);
@@ -878,7 +902,6 @@ namespace HorizonSeason1
                     }
                 }
             }
-            Console.Clear();
         }
         public void drawSystem()
         {
@@ -901,17 +924,20 @@ namespace HorizonSeason1
                     selector = i;
             }
 
+            if (astroidbelt)
+            {
+                drawAstroidBelt();
+            }
+            drawstar(Console.WindowWidth / 2 - radius * 6, Console.WindowHeight / 2 - radius);
+            drawUI(selector);
+
             bool stay = true;
             while (stay)
             {
                 //drawing
-                if (astroidbelt)
-                {
-                    drawAstroidBelt();
-                }
-                drawstar(Console.WindowWidth / 2 - radius * 6, Console.WindowHeight / 2 - radius);
                 drawplanets(selector);
-                drawUI(selector);
+                drawUI(selector, false);
+
 
                 //reciving input
                 ConsoleKey key = Console.ReadKey().Key;
@@ -939,24 +965,65 @@ namespace HorizonSeason1
                 {
                     stay = false;
                 }
-                Console.Clear();
+                Program.manager.clear(0, 32, 100, Console.WindowHeight - 31);
+                Program.manager.clear(101, 0, Console.WindowWidth - 101, 20);
             }
+            Console.Clear();
         }
         public void build(Planet p)
         {
-            string[] options = new string[Program.manager.stringBuildingsName().Length + 1];
-            options = Program.manager.stringBuildingsName();
-            options[options.Length - 1] = "Back";
-            int selector = Program.Menu(105, 4, options, false);
+            //if the player chooses not to buy after he looks at description he will be put back in the list to look for something else
+            bool stay;
+            do
+            {
+                stay = false;
 
-            if (selector != options.Length - 1 && Program.manager.Planetbuildings[selector].build())
-                p.addQueue(Program.manager.Planetbuildings[selector]);
+                //which building to buy
+                string[] options = Program.manager.stringBuildingsName();
+                options[options.Length - 1] = "Back";
+                int selector = Program.Menu(105, 4, options, false);
 
+                //really buy?
+                if (selector != options.Length - 1)
+                {
+                    //displaying info
+                    Console.SetCursorPosition(105, 4);
+                    Console.WriteLine(Program.manager.Planetbuildings[selector].Name);
+                    Console.SetCursorPosition(105, 6);
+                    Console.WriteLine(Program.manager.Planetbuildings[selector].Description);
+                    Console.SetCursorPosition(105, 7);
+                    Console.WriteLine(Program.manager.Planetbuildings[selector].Description2);
+
+                    string[] options1 = { "Buy", "Back" };
+                    int buy = Program.Menu(105, 9, options1, false);
+                    if (buy == 0 && Program.manager.Planetbuildings[selector].build())
+                    {
+                        stay = false;
+                        PlanetBuildings pb = Program.manager.Planetbuildings[selector].copy();
+                        pb.attachp(p);
+                        p.addQueue(pb);
+                    }
+                    else if (buy == 1)
+                        stay = true;
+                }
+
+                //makes sure nothing is left over
+                Program.manager.clear(101, 4, Console.WindowWidth - 101, Console.WindowHeight - 5);
+            }
+            while (stay);
         }
         public void Decisions()
         {
 
         }
+        public void turn()
+        {
+            for (int i = 0; i < planets.Length; i++)
+            {
+                planets[i].turn();
+            }
+        }
+
         //values
         public int getx()
         {

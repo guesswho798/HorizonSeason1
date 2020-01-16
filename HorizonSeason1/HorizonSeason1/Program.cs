@@ -168,7 +168,7 @@ namespace HorizonSeason1
             *                                  *
             *      Raz Shneider -              *
             *      Aden Prescot -              *
-            *                                  *
+            *      Discord server              *
             ************************************
               press any button to continue...");
 
@@ -184,28 +184,28 @@ namespace HorizonSeason1
 
             string[] diff = { "1.easy (young galaxy)", "2.medium (normal galaxy)", "3.hard (old galaxy)" };
             int width = Console.WindowWidth / 2 - diff[0].Length / 2;
-            Console.WriteLine("\n\n                                 game difficulty:");
+            Console.WriteLine("\n\n                                                       game difficulty:");
             int difficulty = Menu(width, 3, diff, false);
 
             Console.Clear();
 
             string[] mapsize = {"1.small", "2.normal", "3.big" };
-            Console.WriteLine("\n\n                              size of map:");
+            Console.WriteLine("\n\n                                                       size of map:");
             int size = Menu(width, 3, mapsize);
 
             Console.Clear();
 
             string[] mapdensity = { "1.spacious", "2.normal", "3.dense" };
-            Console.WriteLine("\n\n                              density of galaxy:");
+            Console.WriteLine("\n\n                                                       density of galaxy:");
             int dense = Menu(width, 3, mapdensity);
 
             Random rand = new Random();
             Console.Clear();
 
-            Console.WriteLine("\n\nchoose a life form:");
+            Console.WriteLine("\n\n                                                       choose a life form:");
             string[] options = { "Humanoid", "Deouring Swarm", "Mammalian" };
 
-            LifeForm life = new LifeForm(Menu(0, 3, options));
+            LifeForm life = new LifeForm(Menu(width, 3, options));
 
             Console.Clear();
             Console.WriteLine("creating a new galaxy...\n");
@@ -269,6 +269,12 @@ namespace HorizonSeason1
                     escape();
                     manager.Galaxy.GetMap(offsetx, offsety);
                 }
+                if (key == ConsoleKey.J)
+                {
+                    manager.nextRound();
+                    loadBackground(offsetx, offsety);
+                    manager.Galaxy.GetMap(offsetx, offsety);
+                }
 
                 //deleting trace
                 if (key == ConsoleKey.UpArrow || key == ConsoleKey.DownArrow || key == ConsoleKey.LeftArrow || key == ConsoleKey.RightArrow)
@@ -297,7 +303,6 @@ namespace HorizonSeason1
                     case ConsoleKey.LeftArrow: if (manager.Galaxy.Getx() > 0) manager.Galaxy.Setx(manager.Galaxy.Getx() - 1); break;
                     case ConsoleKey.RightArrow: if (manager.Galaxy.Getx() < manager.Galaxy.S - 1) manager.Galaxy.Setx(manager.Galaxy.Getx() + 1); break;
                 }
-
 
                 //drawing the player
                 if (manager.Show == true)
@@ -376,6 +381,18 @@ namespace HorizonSeason1
             }
             line += "┘";
             Console.Write(line);
+
+            
+            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 5);
+            Console.Write("┌────────────");
+            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 4);
+            Console.Write("│ round = " + manager.Round);
+            Console.SetCursorPosition(Console.WindowWidth - 15, Console.WindowHeight - 3);
+            Console.Write("┌─┴────────────");
+            Console.SetCursorPosition(Console.WindowWidth - 15, Console.WindowHeight - 2);
+            Console.Write("│ next round");
+            Console.SetCursorPosition(Console.WindowWidth - 15, Console.WindowHeight - 1);
+            Console.Write("│  press j");
         }
 
         static void blink()

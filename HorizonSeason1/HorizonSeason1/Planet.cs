@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace HorizonSeason1
 {
@@ -19,7 +20,7 @@ namespace HorizonSeason1
         private LifeForm life;
         private PlanetBuildings[] buildings;
         private PlanetBuildings[] buildingqueue;
-        
+
 
         public string TypeName { get => typeName; set => typeName = value; }
         public int BaseHabitabilty { get => baseHabitabilty; set => baseHabitabilty = value; }
@@ -152,7 +153,7 @@ namespace HorizonSeason1
             //getting size of planet
             //if (name != "Destroyed Planet")
             //{
-                this.size = array[2];
+            this.size = array[2];
             //}
             switch (array[2])
             {
@@ -220,18 +221,193 @@ namespace HorizonSeason1
             this.pops = rand.Next(1, this.maxPop / 2);
         }
 
+        public void turn()
+        {
+            //Console.WriteLine(buildings.Length);
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                buildings[i].turn();
+            }
 
+            for (int i = buildingqueue.Length - 1; i >= 0; i--)
+            {
+                Console.WriteLine(buildingqueue[i].NumOfTurns);
+                if (buildingqueue[i].turn())
+                {
+                    addbuilding(buildingqueue[i]);
+                    Array.Resize(ref buildingqueue, buildingqueue.Length - 1);
+                }
+            }
+        }
         public string GetQueue()
         {
-            string s = "";
-
+            Dictionary<string, int> dict = new System.Collections.Generic.Dictionary<string, int>();
             for (int i = 0; i < buildingqueue.Length; i++)
             {
-                s += buildingqueue[i].Name;
-                if (i != buildingqueue.Length - 1)
+                //checking if in dictionary
+                bool has = false;
+                if (dict.Count != 0) //on first time there is nothing to look for in dictionary
                 {
-                    s += ", ";
+                    //i dont know why i need to do this but i need to
+                    try
+                    {
+                        foreach (KeyValuePair<string, int> item in dict)
+                        {
+                            //if it is then add one to it
+                            if (buildingqueue[i].Name + "(" + buildingqueue[i].NumOfTurns + ")" == item.Key)
+                            {
+                                has = true;
+                                dict[buildingqueue[i].Name + "(" + buildingqueue[i].NumOfTurns + ")"]++;
+                            }
+
+                        }
+                    }
+                    catch { }
                 }
+                //if not then create a place for it in dictionary
+                if (has == false)
+                {
+                    dict.Add(buildingqueue[i].Name + "(" + buildingqueue[i].NumOfTurns + ")", 1);
+                }
+            }
+
+
+            string s = "";
+            int l = dict.Count;
+            int counter = 0;
+            foreach (KeyValuePair<string, int> item in dict)
+            {
+                if (item.Value != 1)
+                    s += item.Key + " X " + item.Value;
+                else
+                    s += item.Key;
+
+                if (counter != l - 1)
+                    s += ", ";
+
+                counter++;
+            }
+
+            return s;
+        }
+        public string GetBuildings()
+        {
+            Dictionary<string, int> dict = new System.Collections.Generic.Dictionary<string, int>();
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                //checking if in dictionary
+                bool has = false;
+                if (dict.Count != 0) //on first time there is nothing to look for in dictionary
+                {
+                    //i dont know why i need to do this but i need to
+                    try
+                    {
+                        foreach (KeyValuePair<string, int> item in dict)
+                        {
+                            //if it is then add one to it
+                            if (buildings[i].Name == item.Key)
+                            {
+                                has = true;
+                                dict[buildings[i].Name]++;
+                            }
+
+                        }
+                    }
+                    catch { }
+                }
+                //if not then create a place for it in dictionary
+                if (has == false)
+                {
+                    dict.Add(buildings[i].Name, 1);
+                }
+            }
+
+
+            string s = "";
+            int l = dict.Count;
+            int counter = 0;
+            foreach (KeyValuePair<string, int> item in dict)
+            {
+                if (item.Value != 1)
+                    s += item.Key + " X " + item.Value;
+                else
+                    s += item.Key;
+
+                if (counter != l - 1)
+                    s += ", ";
+
+                counter++;
+            }
+
+            return s;
+        }
+        public string GetProduction()
+        {
+            Dictionary<string, int> dictnames = new System.Collections.Generic.Dictionary<string, int>();
+            for (int i = 0; i < buildings.Length; i++)
+            {
+                //checking if in dictionary
+                bool has = false;
+                if (dictnames.Count != 0) //on first time there is nothing to look for in dictionary
+                {
+                    //i dont know why i need to do this but i need to
+                    try
+                    {
+                        foreach (KeyValuePair<string, int> item in dictnames)
+                        {
+                            //if it is then add one to it
+                            if (buildings[i].Name == item.Key)
+                            {
+                                has = true;
+                                dictnames[buildings[i].Name]++;
+                            }
+
+                        }
+                    }
+                    catch { }
+                }
+                //if not then create a place for it in dictionary
+                if (has == false)
+                {
+                    dictnames.Add(buildings[i].Name, 1);
+                }
+            }
+
+
+            Dictionary<string, int> dict = new System.Collections.Generic.Dictionary<string, int>();
+
+            //turns names to productions
+            foreach (KeyValuePair<string, int> item in dictnames)
+            {
+                switch (item.Key)
+                {
+                    case "Energy Plant":
+                        dict.Add("Energy: ", 50 * item.Value);
+                        break;
+                    case "Mines":
+                        dict.Add("Metals: ", 25 * item.Value);
+                        break;
+                    case "Farms":
+                        dict.Add("Food: ", 5 * item.Value);
+                        break;
+                    case "Mega-malls":
+                        dict.Add("Happiness: ", 10 * item.Value);
+                        break;
+                }
+            }
+
+
+            string s = "";
+            int l = dict.Count;
+            int counter = 0;
+            foreach (KeyValuePair<string, int> item in dict)
+            {
+                s += item.Key + item.Value;
+
+                if (counter != l - 1)
+                    s += ", ";
+
+                counter++;
             }
 
             return s;
@@ -240,11 +416,35 @@ namespace HorizonSeason1
         {
             Array.Resize(ref buildingqueue, buildingqueue.Length + 1);
             buildingqueue[buildingqueue.Length - 1] = b;
+
+
+            //making it easier to remove the last one
+            buildingqueue = buildingqueue.OrderByDescending(d => d.NumOfTurns).ToArray();
         }
         public void addbuilding(PlanetBuildings b)
         {
             Array.Resize(ref buildings, buildings.Length + 1);
             buildings[buildings.Length - 1] = b;
+
+            //on first round dont add
+            switch (b.Name)
+            {
+                case "Housing district":
+                    maxPop++;
+                    break;
+                case "Energy Plant":
+                    Program.manager.Energy -= 50;
+                    break;
+                case "Mines":
+                    Program.manager.Metals -= 25;
+                    break;
+                case "Farms":
+                    Program.manager.Food -= 5;
+                    break;
+                case "Mega-malls":
+                    Program.manager.Happiness -= 10;
+                    break;
+            }
         }
         public void MovePlanet()
         {
@@ -255,4 +455,5 @@ namespace HorizonSeason1
             }
         }
     }
+
 }
