@@ -15,7 +15,7 @@ namespace HorizonSeason1
         private int hp;
         private int shield;
         private int numOfTurns;
-        private int[] prices = new int[5]; //prices and generate are [Metals, Energy, Food, Happiness, maxpop]
+        private int[] prices = new int[5];
         private int[] generate = new int[5];
         private Planet p;
 
@@ -79,27 +79,16 @@ namespace HorizonSeason1
         {
             if (numOfTurns == 1)
             {
-                switch (this.name)
-                {
-                    case "Energy Plant":
-                        Program.manager.Energy += 50 * this.number;
-                        break;
-                    case "Mines":
-                        Program.manager.Metals += 25 * this.number;
-                        break;
-                    case "Farms":
-                        Program.manager.Food += 5 * this.number;
-                        break;
-                    case "Mega-malls":
-                        Program.manager.Happiness += 10;
-                        break;
-                }
-
+                Program.manager.Metals += this.generate[0] * this.number;
+                Program.manager.Energy += this.generate[1] * this.number;
+                Program.manager.Food += this.generate[3] * this.number;
+                Program.manager.Happiness += this.generate[4] * this.number;
                 return true;
             }
             else
             {
                 this.numOfTurns--;
+                Console.WriteLine(this.name + ": " + numOfTurns);
                 return false;
             }
         }

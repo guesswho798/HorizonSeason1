@@ -13,6 +13,7 @@ namespace HorizonSeason1
         private int numOfStars;
         private Star[] xy;
         private LifeForm[] lifeForms;
+        private string[] names = new string[45];
 
         public int S { get => s; set => s = value; }
         public LifeForm[] LifeForms { get => lifeForms; set => lifeForms = value; }
@@ -20,6 +21,57 @@ namespace HorizonSeason1
 
         public Galaxy(int difficulty, int size, int dense, Random rand)
         {
+
+            #region making names for stars
+            
+            names[0] = "Zura";
+            names[1] = "Lightaiat";
+            names[2] = "Mudwauy";
+            names[3] = "Osca";
+            names[4] = "Lema";
+            names[5] = "Idrioy";
+            names[6] = "Etrol";
+            names[7] = "Kood";
+            names[8] = "Neekloys";
+            names[9] = "Chugrae";
+            names[10] = "Traevi";
+            names[11] = "Qofaecs";
+            names[12] = "Ucleeddem";
+            names[13] = "Vian";
+            names[14] = "Phallitronium";
+            names[15] = "Pyozus";
+            names[16] = "Bluening";
+            names[17] = "Panogonal";
+            names[18] = "Corpumodo";
+            names[19] = "Airemaximus";
+            names[20] = "Bygiecane";
+            names[21] = "Bygietrooper";
+            names[22] = "Viamesis";
+            names[23] = "Wipolic";
+            names[24] = "Myameda";
+            names[25] = "Drefthya";
+            names[26] = "Moonrani";
+            names[27] = "Koarature";
+            names[28] = "Brahtra";
+            names[29] = "Panginal";
+            names[30] = "Zerontino";
+            names[31] = "Kryteminatron";
+            names[32] = "Isivo";
+            names[33] = "Comboxanoid";
+            names[34] = "Sanamonica";
+            names[35] = "Nexusonix";
+            names[36] = "Carbocho";
+            names[37] = "Uranopolitan";
+            names[38] = "Kyatic";
+            names[39] = "Swordkira";
+            names[40] = "Erikinetic";
+            names[41] = "Thundrakinetic";
+            names[42] = "Neptomon";
+            names[43] = "Marette";
+            names[44] = "Liasaur";
+            #endregion
+
+
             switch (dense)
             {
                 case 0:
@@ -124,24 +176,38 @@ namespace HorizonSeason1
                         {
                             if (rand.Next(0, 100) == 0)
                             {
+                                bool stay = true;
+                                string name = "";
+                                while (stay)
+                                {
+                                    int nameindex = rand.Next(0, 45);
+                                    if (names[nameindex] != "")
+                                    {
+                                        stay = false;
+                                        name = names[nameindex];
+                                        names[nameindex] = "";
+                                    }
+                                }
                                 if (counter != homeStar)
                                 {
-                                    //craeting a star inhabited by other life form
+                                    
+                                    //creating a star inhabited by other life form
                                     if (rand.Next(0, 3) == 0 && counterLifForms < lifeForms.Length)
                                     {
+                                        
                                         //the first rand is for what star it whould be and the secound rand is for how many planets will be
-                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, lifeForms[counterLifForms]);
+                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, name, lifeForms[counterLifForms]);
                                         counterLifForms++;
                                     }
                                     else
                                     {
                                          //the first rand is for what star it whould be and the secound rand is for how many planets will be
-                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter);
+                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, name);
                                     }
                                 }
                                 else
                                 {
-                                    stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, true);
+                                    stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, name, true);
                                     //starting point wil be home planet
                                     cx = x;
                                     cy = y;

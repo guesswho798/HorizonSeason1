@@ -9,6 +9,7 @@ namespace HorizonSeason1
     public class Star
     {
         private string name = "";
+        private string starName;
         private string description;
         private bool homeStar; //if this star is the home system
         private int counter; //id number of the star
@@ -24,8 +25,9 @@ namespace HorizonSeason1
         public Planet[] Planets { get => planets; set => planets = value; }
         public bool HomeStar { get => homeStar; set => homeStar = value; }
 
-        public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, bool homeStar = false)
+        public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, string starname, bool homeStar = false)
         {
+            this.starName = starname;
             this.homeStar = homeStar;
             this.counter = counter;
 
@@ -188,8 +190,9 @@ namespace HorizonSeason1
                 case "White Dwarf": radius = 3; break;
             }
         }
-        public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, LifeForm life)
+        public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, string starname, LifeForm life)
         {
+            this.starName = starname;
             this.homeStar = false;
             this.counter = counter;
 
@@ -595,7 +598,62 @@ namespace HorizonSeason1
                         Console.Write("@");
                     }
                 }
+
+                //drawing shipyard
+                if (p.HasShipyard)
+                {
+                    p.ShipyardPosition++;
+                    if (p.ShipyardPosition == 4)
+                        p.ShipyardPosition = 0;
+                    int x = 0;
+                    int y = 0;
+                    int lastx = 0;
+                    int lasty = 0;
+                    switch (p.ShipyardPosition)
+                    {
+                        case 0:
+                            lastx = offsetx - 1;
+                            lasty = offsety - 1 + p.Size * 2;
+                            x = offsetx - 1;
+                            y = offsety - 1;
+                            break;
+                        case 1:
+                            lastx = offsetx - 1;
+                            lasty = offsety - 1;
+                            x = offsetx + 1 + p.Size * 2;
+                            y = offsety - 1;
+                            break;
+                        case 2:
+                            lastx = offsetx + 1 + p.Size * 2;
+                            lasty = offsety - 1;
+                            x = offsetx + 1 + p.Size * 2;
+                            y = offsety - 1 + p.Size * 2;
+                            break;
+                        case 3:
+                            lastx = offsetx + 1 + p.Size * 2;
+                            lasty = offsety - 1 + p.Size * 2;
+                            x = offsetx - 1;
+                            y = offsety - 1 + p.Size * 2;
+                            break;
+                    }
+                    //puting borders at the edges
+                    if (y < 0)
+                        y = 0;
+                    if (lasty < 0)
+                        lasty = 0;
+                    if (y >= 100)
+                        y = 99;
+                    if (lasty >= 100)
+                        lasty = 99;
+
+                    Console.SetCursorPosition(lastx, lasty);
+                    Console.Write(" ");
+                    Console.SetCursorPosition(x, y);
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write("#");
+                }
             }
+
             Console.ForegroundColor = ConsoleColor.White;
         }
         public void drawUI(int selected, bool lines = true)
@@ -608,7 +666,7 @@ namespace HorizonSeason1
             Console.SetCursorPosition(0, 32);
             if (selectedP.PlayerOwned)
                 Console.WriteLine("Metals: " + Program.manager.Metals + ", Energy: " + Program.manager.Energy + ", Food: " + Program.manager.Food + "              ");
-            Console.WriteLine(GetInfo());
+            Console.WriteLine(GetInfo(true));
 
             string underline = "";
             for (int i = 0; i < selectedP.TypeName.Length; i++)
@@ -972,6 +1030,29 @@ namespace HorizonSeason1
         }
         public void build(Planet p)
         {
+            //buy only buildings
+            if (!p.HasShipyard)
+            {
+                buyBuilding(p);
+            }
+            //buy buildings or ships
+            else
+            {
+                //delete trace of the option "back"
+                Console.SetCursorPosition(105, 8);
+                Console.Write("    ");
+
+                string[] options = { "Buildings", "Ships" , "Back"};
+                int selector = Program.Menu(105, 4, options, false);
+                if (selector == 0)
+                    buyBuilding(p);
+                else if (selector == 1)
+                    buyShips(p);
+
+            }
+        }
+        public void buyBuilding(Planet p)
+        {
             //if the player chooses not to buy after he looks at description he will be put back in the list to look for something else
             bool stay;
             do
@@ -1002,6 +1083,113 @@ namespace HorizonSeason1
                         PlanetBuildings pb = Program.manager.Planetbuildings[selector].copy();
                         pb.attachp(p);
                         p.addQueue(pb);
+                    }
+                    else if (buy == 1)
+                        stay = true;
+                }
+
+                //makes sure nothing is left over
+                Program.manager.clear(101, 4, Console.WindowWidth - 101, Console.WindowHeight - 5);
+            }
+            while (stay);
+        }
+        public void buyShips(Planet p)
+        {
+            //if the player chooses not to buy after he looks at description he will be put back in the list to look for something else
+            bool stay;
+            do
+            {
+                stay = false;
+
+                //which building to buy
+                string[] options = Program.manager.stringShipsName();
+                options[options.Length - 1] = "Back";
+                int selector = Program.Menu(105, 4, options, false);
+
+                //really buy?
+                if (selector != options.Length - 1)
+                {
+                    //displaying info
+                    Console.SetCursorPosition(105, 4);
+                    Console.WriteLine(Program.manager.Ships[selector].Name);
+                    Console.SetCursorPosition(105, 6);
+                    Console.WriteLine(Program.manager.Ships[selector].Description);
+                    Console.SetCursorPosition(105, 7);
+                    Console.WriteLine(Program.manager.Ships[selector].Description2);
+
+                    string[] options1 = { "Buy", "Back" };
+                    int buy = Program.Menu(105, 9, options1, false);
+                    int numOfShips = 1;
+                    Program.manager.clear(105, 9, Console.WindowWidth - 106, 20);
+                    if (buy == 0)
+                    {
+                        Console.SetCursorPosition(105, 9);
+                        Console.WriteLine("Price per ship (Metal:" + Program.manager.Ships[selector].Price[0] + ", ");
+                        Console.SetCursorPosition(105, 10);
+                        Console.WriteLine("Energy: " + Program.manager.Ships[selector].Price[1] + ", Pops: "  + Program.manager.Ships[selector].Price[4] +  ")");
+                        Console.SetCursorPosition(105, 11);
+                        Console.Write("How many(?): ");
+                        Console.CursorVisible = true;
+                        numOfShips = int.Parse(Console.ReadLine());
+                        Console.CursorVisible = false;
+                    }
+
+                    //buying the ship
+                    if (buy == 0 && Program.manager.Ships[selector].build(numOfShips))
+                    {
+                        stay = false;
+                        Ship s = Program.manager.Ships[selector].copy();
+                        Program.manager.clear(105, 4, Console.WindowWidth - 106, 20);
+
+                        //after you bought assigning to a fleet
+                        Console.SetCursorPosition(105, 4);
+                        Console.Write("Assign to a fleet:");
+
+                        string[] options2 = new string[1];
+                        int index = 0;
+
+                        //runing through the whole fleet array
+                        for (int i = 0; i < Program.manager.Fleet.Length; i++)
+                        {
+                            //adding it to the options to display later
+                            try
+                            {
+                                string show = Program.manager.Fleet[i].Name;
+                                options2[index] = show;
+                                index++;
+                                Array.Resize(ref options2, options2.Length + 1);
+                            }
+                            catch
+                            {
+                                //if there is an empty fleet then should break
+                                break;
+                            }
+                        }
+
+                        options2[index] = "Add a new fleet";
+                        int selector1 = Program.Menu(105, 5, options2, false);
+
+                        //assign to a fleet right here
+                        if (selector1 != options2.Length - 1)
+                            Program.manager.Fleet[selector1].add(s.Name, numOfShips, s.Damage * numOfShips, s.Hp * numOfShips, s.Shield * numOfShips);
+                        else
+                        {
+                            Program.manager.clear(105, 4, Console.WindowWidth - 106, 20);
+                            Console.CursorVisible = true;
+                            Console.SetCursorPosition(105, 4);
+                            Console.Write("fleets name: ");
+                            Program.manager.Fleet[selector1] = new fleet(Console.ReadLine());
+                            Console.CursorVisible = false;
+                            Program.manager.Fleet[selector1].add(s.Name, numOfShips, s.Damage * numOfShips, s.Hp * numOfShips, s.Shield * numOfShips);
+                        }
+
+                        Program.manager.clear(105, 4, Console.WindowWidth - 106, 20);
+
+                        Console.SetCursorPosition(105, 9);
+                        Console.Write("you bought " + numOfShips + " " + Program.manager.Ships[selector].Name);
+                        Console.SetCursorPosition(105, 10);
+                        Console.Write("added to fleet: " + Program.manager.Fleet[selector1].Name + "...");
+                        Console.ReadKey();
                     }
                     else if (buy == 1)
                         stay = true;
@@ -1053,7 +1241,7 @@ namespace HorizonSeason1
         {
             return astroidbelt;
         }
-        public string GetInfo()
+        public string GetInfo(bool onlySun = false)
         {
             try
             {
@@ -1067,13 +1255,25 @@ namespace HorizonSeason1
                     pla += planets[i].TypeName;
                     if (i != planets.Length - 1)
                     {
-                        pla += ", ";
+                        pla += "\n";
                     }
                 }
-                if (form == "")
-                    return name + " - home star = " + homeStar + ", anstroid belt = " + astroidbelt + "\n[" + pla + "]";
+                //showing the suns and planets stats
+                if (!onlySun)
+                {
+                    if (form == "")
+                        return "'" + starName + "' " + name + " - home star = " + homeStar + ", anstroid belt = " + astroidbelt + "\n" + pla;
+                    else
+                        return "'" + starName + "' " + name + " - Life form = " + form + ", anstroid belt = " + astroidbelt + "\n" + pla;
+                }
+                //only showing suns stats
                 else
-                    return name + " - Life form = " + form + ", anstroid belt = " + astroidbelt + "\n[" + pla + "]";
+                {
+                    if (form == "")
+                        return name + " - home star = " + homeStar + ", anstroid belt = " + astroidbelt;
+                    else
+                        return name + " - Life form = " + form + ", anstroid belt = " + astroidbelt;
+                }
             }
             catch
             {

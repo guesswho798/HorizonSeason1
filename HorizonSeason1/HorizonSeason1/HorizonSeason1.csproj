@@ -47,7 +47,7 @@
     <Compile Include="Galaxy.cs" />
     <Compile Include="GameManager.cs" />
     <Compile Include="LifeForm.cs" />
-    <Compile Include="MilitaryShips.cs" />
+    <Compile Include="ships.cs" />
     <Compile Include="Planet.cs" />
     <Compile Include="PlanetBuildings.cs" />
     <Compile Include="ProductionShips.cs" />

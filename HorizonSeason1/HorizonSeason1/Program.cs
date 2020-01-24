@@ -10,18 +10,12 @@ namespace HorizonSeason1
     class Program
     {
         //there is a map for the stars but every other thing just has its own x and y just so things could go on each other
-
-
-        /// <summary>
-        /// to do list
-        /// constroctors
-        /// LoadGame func
-        /// </summary>
-        /// <param name="args"></param>
+        
 
         ///ideas:
         ///pops adds 0.something every cycle and will cost food per billion and you can stop births at 2 per family --> happiness down but growth stops
         ///
+
         public static GameManager manager;
 
         static void Main()
@@ -192,7 +186,7 @@ namespace HorizonSeason1
             string[] mapsize = {"1.small", "2.normal", "3.big" };
             Console.WriteLine("\n\n                                                       size of map:");
             int size = Menu(width, 3, mapsize);
-
+            size = 1;
             Console.Clear();
 
             string[] mapdensity = { "1.spacious", "2.normal", "3.dense" };
@@ -226,10 +220,11 @@ namespace HorizonSeason1
 
         public static void Game(int offsetx, int offsety)
         {
-            loadBackground(offsetx, offsety);
+            loadBackground(offsetx, offsety, manager.Galaxy.Getstar().Planets.Length + 1);
             manager.Galaxy.GetMap(offsetx, offsety);
 
             manager.Showmove = true;
+            int space = 0;
             while (true)
             {
                 Console.CursorVisible = false;
@@ -239,8 +234,23 @@ namespace HorizonSeason1
 
                 //showing info of system
                 Console.ForegroundColor = ConsoleColor.White;
-                setCur(0, 1);
-                try { Console.WriteLine(manager.Galaxy.Getstar().GetInfo()); } catch { Console.WriteLine("                                                                                                                                                                                                                                           "); }
+                try 
+                {
+                    //the space is the number of planet, the star info and the line in the button so planets + 1 for the drawing and + 2 for the remove
+                    space = manager.Galaxy.Getstar().Planets.Length + 1;
+                    manager.clear(0, 2, 67, space + 1);
+                    setCur(0, 2);
+                    Console.WriteLine(manager.Galaxy.Getstar().GetInfo());
+                    loadBackground(offsetx, offsety, space);
+                    manager.Galaxy.GetMap(offsetx, offsety);
+                } 
+                catch 
+                {
+                    manager.clear(0, 2, 67, space + 1);
+                    setCur(0, 2);
+                    loadBackground(offsetx, offsety);
+                    manager.Galaxy.GetMap(offsetx, offsety);
+                }
 
                 //stoping to read input
                 ConsoleKey key = Console.ReadKey(false).Key;
@@ -254,7 +264,7 @@ namespace HorizonSeason1
                         Console.Clear();
                         manager.Galaxy.Getstar().drawSystem(); //drawing the system
                         manager.Showmove = true;
-                        loadBackground(offsetx,offsety);
+                        loadBackground(offsetx,offsety, space);
                         manager.Galaxy.GetMap(offsetx, offsety);
                     }
                     catch
@@ -264,15 +274,23 @@ namespace HorizonSeason1
                         manager.Showmove = true;
                     }
                 }
+                //menu
                 if (key == ConsoleKey.Escape)
                 {
                     escape();
                     manager.Galaxy.GetMap(offsetx, offsety);
                 }
-                if (key == ConsoleKey.J)
+                //next round
+                if (key == ConsoleKey.R)
                 {
                     manager.nextRound();
-                    loadBackground(offsetx, offsety);
+                    loadBackground(offsetx, offsety, space);
+                    manager.Galaxy.GetMap(offsetx, offsety);
+                }
+                //tech tree
+                if (key == ConsoleKey.T)
+                {
+                    techTree();
                     manager.Galaxy.GetMap(offsetx, offsety);
                 }
 
@@ -314,6 +332,21 @@ namespace HorizonSeason1
             }
         }
 
+        public static void techTree()
+        {
+            Console.Clear();
+            manager.Showmove = false;
+
+
+            Console.WriteLine("in tech tree");
+
+
+
+            manager.Showmove = true;
+            Console.Clear();
+            Console.ReadKey();
+        }
+
         public static void escape()
         {
             Console.Clear();
@@ -349,8 +382,9 @@ namespace HorizonSeason1
             Console.Clear();
         }
 
-        public static void loadBackground(int offsetx, int offsety)
+        public static void loadBackground(int offsetx, int offsety, int planetsToShow = 0)
         {
+            #region square to galaxy
             setCur(offsetx - 1, offsety - 1);
             string line = "┌";
             for (int i = 0; i < manager.Galaxy.S; i++)
@@ -381,10 +415,18 @@ namespace HorizonSeason1
             }
             line += "┘";
             Console.Write(line);
+            #endregion
 
-            
-            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 5);
+            #region next round and tech buttons
+
+            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 8);
             Console.Write("┌────────────");
+            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 7);
+            Console.Write("│ tech tree");
+            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 6);
+            Console.Write("│  press T");
+            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 5);
+            Console.Write("├────────────");
             Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 4);
             Console.Write("│ round = " + manager.Round);
             Console.SetCursorPosition(Console.WindowWidth - 15, Console.WindowHeight - 3);
@@ -392,7 +434,59 @@ namespace HorizonSeason1
             Console.SetCursorPosition(Console.WindowWidth - 15, Console.WindowHeight - 2);
             Console.Write("│ next round");
             Console.SetCursorPosition(Console.WindowWidth - 15, Console.WindowHeight - 1);
-            Console.Write("│  press j");
+            Console.Write("│  press R");
+            #endregion
+
+            #region top resources info
+            Console.SetCursorPosition(3, 0);
+            Console.WriteLine("Metals: " + manager.Metals + "   Energy: " + manager.Energy + "   Food: " + manager.Food + "   Happiness:  " + manager.Happiness + "   Tech:  " + manager.Tech);
+
+            for (int i = 0; i < Console.WindowWidth; i++)
+            {
+                Console.Write("─");
+            }
+
+            Console.SetCursorPosition(80, 1);
+            Console.Write("┴");
+            Console.SetCursorPosition(80, 0);
+            Console.Write("│");
+            #endregion
+
+            #region round info
+            Console.SetCursorPosition(90, 1);
+            Console.Write("┬");
+            for (int i = 0; i < 13; i++)
+            {
+                Console.SetCursorPosition(90, 2 + i);
+                Console.Write("│");
+            }
+            Console.SetCursorPosition(96, 3);
+            Console.WriteLine("Situation Report");
+            Console.SetCursorPosition(96, 4);
+            Console.WriteLine("────────────────");
+
+            Console.SetCursorPosition(90, 15);
+            Console.WriteLine("└────────────────────────────────────────");
+            #endregion
+
+            #region galaxy info
+            if (planetsToShow != 0)
+            {
+                
+
+                setCur(66, 1);
+                Console.Write("┬");
+                for (int i = 0; i < planetsToShow; i++)
+                {
+                    setCur(66, 2 + i);
+                    Console.Write("│");
+                }
+
+                setCur(0, 2 + planetsToShow);
+                Console.Write("──────────────────────────────────────────────────────────────────┘");
+                
+            }
+            #endregion
         }
 
         static void blink()
@@ -434,6 +528,12 @@ namespace HorizonSeason1
                     setCur(50, 0);
                 }
                 Thread.Sleep(500);
+
+                //just to stop the function from running all the time
+                while (!manager.Showmove)
+                {
+
+                }
             }
         }
 

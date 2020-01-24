@@ -15,11 +15,13 @@ namespace HorizonSeason1
         private int size;
         private int pops = 0;
         private int position;
+        private int shipyardPosition;
         private bool playerOwned;
         private bool creatureOwned;
         private LifeForm life;
         private PlanetBuildings[] buildings;
         private PlanetBuildings[] buildingqueue;
+        private bool hasShipyard;
 
 
         public string TypeName { get => typeName; set => typeName = value; }
@@ -31,9 +33,12 @@ namespace HorizonSeason1
         public bool CreatureOwned { get => creatureOwned; set => creatureOwned = value; }
         public bool PlayerOwned { get => playerOwned; set => playerOwned = value; }
         public LifeForm Life { get => life; set => life = value; }
+        public bool HasShipyard { get => hasShipyard; set => hasShipyard = value; }
+        public int ShipyardPosition { get => shipyardPosition; set => shipyardPosition = value; }
 
         public Planet(bool homestar, int[] array, int radius, Random rand, int position)
         {
+            hasShipyard = false;
             string name = "";
             int habitabilty = 0;
             this.creatureOwned = false;
@@ -177,6 +182,7 @@ namespace HorizonSeason1
 
         public Planet(int[] array, int radius, Random rand, int position, LifeForm life)
         {
+            hasShipyard = false;
             this.playerOwned = false;
             this.creatureOwned = true;
             this.Position = position;
@@ -417,7 +423,6 @@ namespace HorizonSeason1
             Array.Resize(ref buildingqueue, buildingqueue.Length + 1);
             buildingqueue[buildingqueue.Length - 1] = b;
 
-
             //making it easier to remove the last one
             buildingqueue = buildingqueue.OrderByDescending(d => d.NumOfTurns).ToArray();
         }
@@ -445,6 +450,9 @@ namespace HorizonSeason1
                     Program.manager.Happiness -= 10;
                     break;
             }
+
+            if (b.Name == "Shipyard")
+                HasShipyard = true;
         }
         public void MovePlanet()
         {
@@ -455,5 +463,4 @@ namespace HorizonSeason1
             }
         }
     }
-
 }
