@@ -265,19 +265,24 @@ namespace HorizonSeason1
                 Console.SetCursorPosition(xy[i].getx() + offsetx, xy[i].gety() + offsety);
 
                 string name = stars[xy[i].getx(), xy[i].gety()].getName();
-                switch (name)
+                //only show visible stars
+                if (stars[xy[i].getx(), xy[i].gety()].Visible)
                 {
-                    case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.Write("*"); break;
-                    case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("*"); break;
-                    case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; Console.Write("*"); break;
-                    case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("*"); break;
-                    case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; Console.Write("*"); break;
-                    case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; Console.Write(":"); break;
-                    case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; Console.Write("."); break;
-                    case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; Console.Write("."); break;
-                    default: Console.Write("ERROR " + name); break;
+                    switch (name)
+                    {
+                        case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.Write("*"); break;
+                        case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("*"); break;
+                        case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; Console.Write("*"); break;
+                        case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("*"); break;
+                        case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; Console.Write("*"); break;
+                        case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; Console.Write(":"); break;
+                        case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; Console.Write("."); break;
+                        case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; Console.Write("."); break;
+                        default: Console.Write("ERROR " + name); break;
+                    }
+
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
-                Console.ForegroundColor = ConsoleColor.White;
             }
         }
 
@@ -304,9 +309,20 @@ namespace HorizonSeason1
             {
                 return stars[cx, cy].getName();
             }
-            catch (Exception)
+            catch
             {
                 return "";
+            }
+        }
+        public bool Getstarvisible()
+        {
+            try
+            {
+                return stars[cx, cy].Visible;
+            }
+            catch
+            {
+                return false;
             }
         }
         public Star Getstar()
@@ -315,9 +331,8 @@ namespace HorizonSeason1
             {
                 return stars[cx, cy];
             }
-            catch (Exception)
+            catch
             {
-
                 return null;
             }
         }

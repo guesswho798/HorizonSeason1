@@ -12,6 +12,8 @@ namespace HorizonSeason1
         private string bio;
         private Planet[] planetsOwned;
         private int[] traits;
+        private int CP; //Combat Power
+        private int DP; //Defence Power
 
         //choose a specific life form
         public LifeForm(int id)
@@ -50,6 +52,9 @@ namespace HorizonSeason1
             int[] traits = new int[0];
             planetsOwned = new Planet[0];
 
+            CP = rand.Next(10, 250);
+            DP = rand.Next(10, 250);
+
             //randomize
             int r = rand.Next(0, 3);
             switch (r)
@@ -80,5 +85,7 @@ namespace HorizonSeason1
         public string Bio { get => bio; set => bio = value; }
         public int[] Traits { get => traits; set => traits = value; }
         public Planet[] PlanetsOwned { get => planetsOwned; set => planetsOwned = value; }
+        public int CP1 { get => CP; set => CP = value; }
+        public int DP1 { get => DP; set => DP = value; }
     }
 }

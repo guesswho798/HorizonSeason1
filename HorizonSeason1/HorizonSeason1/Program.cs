@@ -23,6 +23,9 @@ namespace HorizonSeason1
             Console.Title = "Horizons: Season One";
             Console.CursorVisible = false;
             Console.SetWindowSize(131, 40);
+
+
+            manager = new GameManager();
             
             //start of program
             string[] options = { "Start new game", "    credits", "     exit" };
@@ -232,19 +235,23 @@ namespace HorizonSeason1
                 setCur(0, 0);
                 Console.Write(" ");
 
-                //showing info of system
-                Console.ForegroundColor = ConsoleColor.White;
-                try 
+                //showing info of system if visible
+                    Console.ForegroundColor = ConsoleColor.White;
+                try
                 {
-                    //the space is the number of planet, the star info and the line in the button so planets + 1 for the drawing and + 2 for the remove
-                    space = manager.Galaxy.Getstar().Planets.Length + 1;
-                    manager.clear(0, 2, 67, space + 1);
-                    setCur(0, 2);
-                    Console.WriteLine(manager.Galaxy.Getstar().GetInfo());
-                    loadBackground(offsetx, offsety, space);
-                    manager.Galaxy.GetMap(offsetx, offsety);
-                } 
-                catch 
+                    //in here i used the .visible to make sure that if there is no star then an error whould be triggerd
+                    if (manager.Galaxy.Getstar().Visible)
+                    {
+                        //the space is the number of planet, the star info and the line in the button so planets + 1 for the drawing and + 2 for the remove
+                        space = manager.Galaxy.Getstar().Planets.Length + 1;
+                        manager.clear(0, 2, 67, space + 1);
+                        setCur(0, 2);
+                        Console.WriteLine(manager.Galaxy.Getstar().GetInfo());
+                        loadBackground(offsetx, offsety, space);
+                        manager.Galaxy.GetMap(offsetx, offsety);
+                    }
+                }
+                catch
                 {
                     manager.clear(0, 2, 67, space + 1);
                     setCur(0, 2);
@@ -299,18 +306,22 @@ namespace HorizonSeason1
                 {
                     //deleting trace
                     setCur(manager.Galaxy.Getx() + offsetx, manager.Galaxy.Gety() + offsety);
-                    switch (manager.Galaxy.Getstarname())
+                    if (manager.Galaxy.Getstarvisible())
                     {
-                        case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.Write("*"); break;
-                        case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("*"); break;
-                        case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; Console.Write("*"); break;
-                        case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("*"); break;
-                        case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; Console.Write("*"); break;
-                        case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; Console.Write(":"); break;
-                        case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; Console.Write("."); break;
-                        case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; Console.Write("."); break;
-                        default: Console.Write(" "); break;
+                        switch (manager.Galaxy.Getstarname())
+                        {
+                            case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.Write("*"); break;
+                            case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("*"); break;
+                            case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; Console.Write("*"); break;
+                            case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("*"); break;
+                            case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; Console.Write("*"); break;
+                            case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; Console.Write(":"); break;
+                            case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; Console.Write("."); break;
+                            case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; Console.Write("."); break;
+                            default: Console.Write(" "); break;
+                        }
                     }
+                    else { Console.Write(" "); }
                 }
 
                 //moving player
@@ -338,13 +349,122 @@ namespace HorizonSeason1
             manager.Showmove = false;
 
 
-            Console.WriteLine("in tech tree");
+            setCur(100, 4);
+            Console.WriteLine("Engineering");
 
+            #region Physics
+            setCur(10, 3);
+            Console.WriteLine("┌─────────┐");
+            setCur(10, 4);
+            Console.WriteLine("│ Physics │");
+            setCur(10, 5);
+            Console.WriteLine("├─────────┴──────────────┐");
+            setCur(10, 6);
+            Console.WriteLine("│   * Laser cannon       │");
+            setCur(10, 7);
+            Console.WriteLine("│   * Space Scanner      │");
+            setCur(10, 8);
+            Console.WriteLine("│                        │");
+            setCur(10, 9);
+            Console.WriteLine("│     Tech Points = 50   │");
+            setCur(10, 10);
+            Console.WriteLine("│     Turns = 10         │");
+            setCur(10, 11);
+            Console.WriteLine("└──────┬─────────────────┘");
+            setCur(10, 12);
+            Console.WriteLine("       │");
+            setCur(10, 13);
+            Console.WriteLine("┌──────┴─────────┐");
+            setCur(10, 14);
+            Console.WriteLine("│ Fusion Physics │");
+            setCur(10, 15);
+            Console.WriteLine("├────────────────┴───────┐");
+            setCur(10, 16);
+            Console.WriteLine("│   * Fusion Rifle       │");
+            setCur(10, 17);
+            Console.WriteLine("│   * fusion Beam        │");
+            setCur(10, 18);
+            Console.WriteLine("│                        │");
+            setCur(10, 19);
+            Console.WriteLine("│     Tech Points = 75   │");
+            setCur(10, 20);
+            Console.WriteLine("│     Turns = 15         │");
+            setCur(10, 21);
+            Console.WriteLine("└────────────────────────┘");
+            #endregion
 
+            /*
+            setCur(50, 3);
+            Console.WriteLine("┌─────────┐");
+            setCur(50, 4);
+            Console.WriteLine("│ Society │");
+            setCur(50, 5);
+            Console.WriteLine("├─────────┴──────────────┐");
+            setCur(50, 6);
+            Console.WriteLine("│   * Laser cannon       │");
+            setCur(50, 7);
+            Console.WriteLine("│   * Space Scanner      │");
+            setCur(50, 8);
+            Console.WriteLine("│                        │");
+            setCur(50, 9);
+            Console.WriteLine("│     Tech Points = 50   │");
+            setCur(50, 10);
+            Console.WriteLine("│     Turns = 10         │");
+            setCur(50, 11);
+            Console.WriteLine("└──────┬─────────────────┘");
+            setCur(50, 12);
+            Console.WriteLine("       │");
+            setCur(50, 13);
+            Console.WriteLine("┌──────┴───────┐");
+            setCur(50, 14);
+            Console.WriteLine("│Fusion Physics│");
+            setCur(50, 15);
+            Console.WriteLine("├──────────────┴─────────┐");
+            setCur(50, 16);
+            Console.WriteLine("│     * Fusion Rifle     │");
+            setCur(50, 17);
+            Console.WriteLine("│     * fusion Beam      │");
+            setCur(50, 18);
+            Console.WriteLine("│      tech = 75         │");
+            setCur(50, 19);
+            Console.WriteLine("└───────────┬────────────┘");
+            setCur(50, 20);
+            Console.WriteLine("            │");
+            setCur(50, 21);
+            Console.WriteLine("    ┌───────┴────────┐");
+            setCur(50, 22);
+            Console.WriteLine("    │Neutrino Physics│");
+            setCur(50, 23);
+            Console.WriteLine("┌───┴────────────────┴───┐");
+            setCur(50, 24);
+            Console.WriteLine("│    * Neutron Scanner   │");
+            setCur(50, 25);
+            Console.WriteLine("│    * Neutron Blaster   │");
+            setCur(50, 26);
+            Console.WriteLine("│       tech = 100       │");
+            setCur(50, 27);
+            Console.WriteLine("└───────────┬────────────┘");
+            setCur(50, 28);
+            Console.WriteLine("            │");
+            setCur(50, 29);
+            Console.WriteLine("   ┌────────┴─────────┐");
+            setCur(50, 30);
+            Console.WriteLine("   │artificial gravity│");
+            setCur(50, 31);
+            Console.WriteLine("┌──┴──────────────────┴──┐");
+            setCur(50, 32);
+            Console.WriteLine("│  * Anti Gravity Armor  │");
+            setCur(50, 33);
+            Console.WriteLine("│  * long range flights  │");
+            setCur(50, 34);
+            Console.WriteLine("│       tech = 125       │");
+            setCur(50, 35);
+            Console.WriteLine("└────────────────────────┘");
+            */
 
-            manager.Showmove = true;
-            Console.Clear();
             Console.ReadKey();
+            Console.Clear();
+            manager.Showmove = true;
         }
 
         public static void escape()
@@ -510,21 +630,27 @@ namespace HorizonSeason1
                 if (manager.Showmove) //making sure it wont blink in options
                 {
                     setCur(manager.Galaxy.Getx() + offsetx, manager.Galaxy.Gety() + offsety);
-                    switch (manager.Galaxy.Getstarname())
+                    if (manager.Galaxy.Getstarvisible())
                     {
-                        case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.Write("*"); break;
-                        case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("*"); break;
-                        case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; Console.Write("*"); break;
-                        case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("*"); break;
-                        case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; Console.Write("*"); break;
-                        case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; Console.Write(":"); break;
-                        case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; Console.Write("."); break;
-                        case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; Console.Write("."); break;
-                        default: Console.Write(" "); break;
+                        switch (manager.Galaxy.Getstarname())
+                        {
+                            case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.Write("*"); break;
+                            case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("*"); break;
+                            case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; Console.Write("*"); break;
+                            case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("*"); break;
+                            case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; Console.Write("*"); break;
+                            case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; Console.Write(":"); break;
+                            case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; Console.Write("."); break;
+                            case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; Console.Write("."); break;
+                            default: Console.Write(" "); break;
+                        }
+                        Console.ForegroundColor = ConsoleColor.White;
+                        manager.Show = false;
                     }
-                    Console.ForegroundColor = ConsoleColor.White;
-                    manager.Show = false;
-
+                    else
+                    {
+                        Console.Write(" ");
+                    }
                     setCur(50, 0);
                 }
                 Thread.Sleep(500);

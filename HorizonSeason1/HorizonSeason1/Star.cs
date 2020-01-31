@@ -14,6 +14,7 @@ namespace HorizonSeason1
         private bool homeStar; //if this star is the home system
         private int counter; //id number of the star
         private bool astroidbelt; //weather the planet is soraunded by an astroid belt
+        private bool visible;
         private int x; //galaxy map x
         private int y; //galaxy map y
         private int sx; //system x
@@ -24,11 +25,13 @@ namespace HorizonSeason1
         public int Radius { get => radius; set => radius = value; }
         public Planet[] Planets { get => planets; set => planets = value; }
         public bool HomeStar { get => homeStar; set => homeStar = value; }
+        public bool Visible { get => visible; set => visible = value; }
 
         public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, string starname, bool homeStar = false)
         {
             this.starName = starname;
             this.homeStar = homeStar;
+            this.visible = this.homeStar;
             this.counter = counter;
 
             //which star
@@ -195,6 +198,7 @@ namespace HorizonSeason1
             this.starName = starname;
             this.homeStar = false;
             this.counter = counter;
+            this.visible = true;
 
             //which star
             if (difficulty == 0 && id <= 19 || difficulty == 1 && id <= 7 || difficulty == 2 && id <= 7)
@@ -701,9 +705,10 @@ namespace HorizonSeason1
             }
             else if (selectedP.CreatureOwned)
             {
-                Console.WriteLine("\nSpecies: " + selectedP.Life.Name);
-
+                Console.WriteLine("Species: " + selectedP.Life.Name);
                 Console.WriteLine("Population: " + selectedP.Pops);
+                Console.WriteLine("Combat Power: " + selectedP.Life.CP1);
+                Console.WriteLine("Defence Power: " + selectedP.Life.DP1);
             }
             else if (selectedP.TypeName != "Destroyed Planet")
             {
@@ -1262,17 +1267,17 @@ namespace HorizonSeason1
                 if (!onlySun)
                 {
                     if (form == "")
-                        return "'" + starName + "' " + name + " - home star = " + homeStar + ", anstroid belt = " + astroidbelt + "\n" + pla;
+                        return "'" + starName + "' " + name + " - home star = " + homeStar + "\n" + pla;
                     else
-                        return "'" + starName + "' " + name + " - Life form = " + form + ", anstroid belt = " + astroidbelt + "\n" + pla;
+                        return "'" + starName + "' " + name + " - Life form = " + form + "\n" + pla;
                 }
                 //only showing suns stats
                 else
                 {
                     if (form == "")
-                        return name + " - home star = " + homeStar + ", anstroid belt = " + astroidbelt;
+                        return name + " - home star = " + homeStar;
                     else
-                        return name + " - Life form = " + form + ", anstroid belt = " + astroidbelt;
+                        return name + " - Life form = " + form;
                 }
             }
             catch
