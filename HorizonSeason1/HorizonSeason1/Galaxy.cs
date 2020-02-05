@@ -260,6 +260,62 @@ namespace HorizonSeason1
 
         public void GetMap(int offsetx = 0, int offsety = 0)
         {
+            //the color of the scanned area
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+            //searching for visible stars
+            for (int i = 0; i < numOfStars; i++)
+            {
+                Star s = stars[xy[i].getx(), xy[i].gety()];
+
+                if (s.HomeStar) //calculating distence from owned stars
+                {
+                    double r_in = s.Range - 0.0;
+                    double r_out = s.Range + 0.1;
+                    int countery = 0;
+                    for (double y = s.Range; y >= -s.Range; --y)
+                    {
+                        int counterx = 0;
+                        for (double x = -s.Range; x < r_out; x += 0.5)
+                        {
+                            int placex = counterx + s.getx() - s.Range - 3;
+                            int placey = countery + s.gety() - s.Range;
+
+                            double value = x * x + y * y;
+
+                            Console.SetCursorPosition(offsetx + placex, offsety + placey);
+                            
+
+                            if (placex >= 0 && placex < this.s && placey >= 0 && placey < this.s / 2)
+                            {
+                                //showing only the stars in range
+                                if (value >= r_in * r_in && value <= r_out * r_out)
+                                {
+                                    Console.Write(" ");
+
+                                    if (stars[placex, placey] != null)
+                                        stars[placex, placey].Visible = true;
+                                }
+                                if (value < r_in * r_in && value < r_out * r_out)
+                                {
+                                    Console.Write(" ");
+
+                                    if (stars[placex, placey] != null)
+                                        stars[placex, placey].Visible = true;
+                                }
+                            }
+                            counterx++;
+                        }
+                        countery++;
+                    }
+                }
+            }
+
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+
+            //showing the stars
             for (int i = 0; i < numOfStars; i++)
             {
                 Console.SetCursorPosition(xy[i].getx() + offsetx, xy[i].gety() + offsety);

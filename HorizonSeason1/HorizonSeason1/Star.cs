@@ -20,18 +20,23 @@ namespace HorizonSeason1
         private int sx; //system x
         private int sy; //system y
         private int radius; //radius of star
+        private int range; //the scanners range
         Planet[] planets;
 
         public int Radius { get => radius; set => radius = value; }
         public Planet[] Planets { get => planets; set => planets = value; }
         public bool HomeStar { get => homeStar; set => homeStar = value; }
         public bool Visible { get => visible; set => visible = value; }
+        public int Range { get => range; set => range = value; }
+        public string StarName { get => starName; set => starName = value; }
 
         public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, string starname, bool homeStar = false)
         {
             this.starName = starname;
             this.homeStar = homeStar;
-            this.visible = this.homeStar;
+            this.visible = homeStar;
+            if (visible)
+                range = 3;
             this.counter = counter;
 
             //which star
@@ -198,7 +203,7 @@ namespace HorizonSeason1
             this.starName = starname;
             this.homeStar = false;
             this.counter = counter;
-            this.visible = true;
+            this.visible = false;
 
             //which star
             if (difficulty == 0 && id <= 19 || difficulty == 1 && id <= 7 || difficulty == 2 && id <= 7)
@@ -572,6 +577,7 @@ namespace HorizonSeason1
                             double value = x * x + y * y;
                             if (value >= r_in * r_in && value <= r_out * r_out)
                             {
+                                //the outline of a destroyed plant will be drawn
                                 Console.Write("*");
                             }
                             else if (value < r_in * r_in && value < r_out * r_out)

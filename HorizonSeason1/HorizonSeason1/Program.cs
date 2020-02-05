@@ -236,7 +236,7 @@ namespace HorizonSeason1
                 Console.Write(" ");
 
                 //showing info of system if visible
-                    Console.ForegroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.White;
                 try
                 {
                     //in here i used the .visible to make sure that if there is no star then an error whould be triggerd
@@ -299,6 +299,10 @@ namespace HorizonSeason1
                 {
                     techTree();
                     manager.Galaxy.GetMap(offsetx, offsety);
+                }
+                if (key == ConsoleKey.H)
+                {
+                    manager.Galaxy.Getstar().HomeStar = true;
                 }
 
                 //deleting trace
