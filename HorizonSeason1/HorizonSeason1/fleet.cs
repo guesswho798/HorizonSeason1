@@ -31,13 +31,17 @@ namespace HorizonSeason1
             fleetId++;
         }
 
-        public void add(string name ,int number, int attackPoints, int hp, int shield)
+        public void add(Ship s, int number)
         {
-            //ships[numOfShips] = s;
-            this.numOfShips++;
-            this.attackPoints += attackPoints * number;
-            this.hp += hp * number;
-            this.shield += shield * number;
+            for (int i = 0; i < number; i++)
+            {
+                ships[numOfShips] = s;
+                this.numOfShips++;
+            }
+            
+            //this.attackPoints += attackPoints * number;
+            //this.hp += hp * number;
+            //this.shield += shield * number;
         }
 
         public void subtract(int damage)
@@ -72,9 +76,9 @@ namespace HorizonSeason1
                 if (dict.Count != 0) //on first time there is nothing to look for in dictionary
                 {
                     //i dont know why i need to do this but i need to
-                    try
+                    if (ships[i] != null)
                     {
-                        foreach (KeyValuePair<string, int> item in dict)
+                        foreach (KeyValuePair<string, int> item in dict.ToList())
                         {
                             //if it is then add one to it
                             if (ships[i].Name == item.Key)
@@ -85,16 +89,14 @@ namespace HorizonSeason1
 
                         }
                     }
-                    catch { }
                 }
                 //if not then create a place for it in dictionary
                 if (has == false)
                 {
-                    try
+                    if (ships[i] != null)
                     {
                         dict.Add(ships[i].Name, 1);
                     }
-                    catch { }
                 }
             }
 

@@ -36,7 +36,7 @@ namespace HorizonSeason1
             this.homeStar = homeStar;
             this.visible = homeStar;
             if (visible)
-                range = 3;
+                range = 7;
             this.counter = counter;
 
             //which star
@@ -1163,14 +1163,14 @@ namespace HorizonSeason1
                         for (int i = 0; i < Program.manager.Fleet.Length; i++)
                         {
                             //adding it to the options to display later
-                            try
+                            if (Program.manager.Fleet[i] != null)
                             {
                                 string show = Program.manager.Fleet[i].Name;
                                 options2[index] = show;
                                 index++;
                                 Array.Resize(ref options2, options2.Length + 1);
                             }
-                            catch
+                            else
                             {
                                 //if there is an empty fleet then should break
                                 break;
@@ -1182,7 +1182,7 @@ namespace HorizonSeason1
 
                         //assign to a fleet right here
                         if (selector1 != options2.Length - 1)
-                            Program.manager.Fleet[selector1].add(s.Name, numOfShips, s.Damage * numOfShips, s.Hp * numOfShips, s.Shield * numOfShips);
+                            Program.manager.Fleet[selector1].add(s, numOfShips);
                         else
                         {
                             Program.manager.clear(105, 4, Console.WindowWidth - 106, 20);
@@ -1191,7 +1191,7 @@ namespace HorizonSeason1
                             Console.Write("fleets name: ");
                             Program.manager.Fleet[selector1] = new fleet(Console.ReadLine());
                             Console.CursorVisible = false;
-                            Program.manager.Fleet[selector1].add(s.Name, numOfShips, s.Damage * numOfShips, s.Hp * numOfShips, s.Shield * numOfShips);
+                            Program.manager.Fleet[selector1].add(s, numOfShips);
                         }
 
                         Program.manager.clear(105, 4, Console.WindowWidth - 106, 20);
@@ -1200,7 +1200,9 @@ namespace HorizonSeason1
                         Console.Write("you bought " + numOfShips + " " + Program.manager.Ships[selector].Name);
                         Console.SetCursorPosition(105, 10);
                         Console.Write("added to fleet: " + Program.manager.Fleet[selector1].Name + "...");
+                        Console.CursorVisible = true;
                         Console.ReadKey();
+                        Console.CursorVisible = false;
                     }
                     else if (buy == 1)
                         stay = true;

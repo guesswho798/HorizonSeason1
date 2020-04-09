@@ -68,7 +68,6 @@ namespace HorizonSeason1
             {
                 Program.manager.Metals -= price[0] * number;
                 Program.manager.Energy -= price[1] * number;
-                Program.manager.Fleet[fleetnumber].add(name, number, damage, hp, shield);
             }
         }
 

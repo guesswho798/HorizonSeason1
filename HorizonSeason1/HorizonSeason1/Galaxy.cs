@@ -168,11 +168,7 @@ namespace HorizonSeason1
                     for (int x = 0; x < stars.GetLength(0); x++)
                     {
                         //making sure im not placing 2 planets on each pther
-                        try
-                        {
-                            stars[x, y].getName();
-                        }
-                        catch
+                        if (stars[x, y] == null)
                         {
                             if (rand.Next(0, 100) == 0)
                             {
@@ -231,7 +227,10 @@ namespace HorizonSeason1
             {
                 for (int x = 0; x < s; x++)
                 {
-                    try
+                    if (numOfStars == counter1)
+                        break;
+
+                    if (stars[x, y] != null)
                     {
                         stars[x, y].getName();
                         xy[counter1] = stars[x, y];
@@ -239,8 +238,6 @@ namespace HorizonSeason1
                         xy[counter1].sety(y);
                         counter1++;
                     }
-                    catch
-                    { }
                 }
             }
 
@@ -284,11 +281,11 @@ namespace HorizonSeason1
 
                             double value = x * x + y * y;
 
-                            Console.SetCursorPosition(offsetx + placex, offsety + placey);
-                            
 
                             if (placex >= 0 && placex < this.s && placey >= 0 && placey < this.s / 2)
                             {
+                                Console.SetCursorPosition(offsetx + placex, offsety + placey);
+
                                 //showing only the stars in range
                                 if (value >= r_in * r_in && value <= r_out * r_out)
                                 {
@@ -312,7 +309,6 @@ namespace HorizonSeason1
                 }
             }
 
-            Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
 
             //showing the stars
@@ -340,6 +336,7 @@ namespace HorizonSeason1
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
+            Console.BackgroundColor = ConsoleColor.Black;
         }
 
         public int Getx()
@@ -372,11 +369,11 @@ namespace HorizonSeason1
         }
         public bool Getstarvisible()
         {
-            try
+            if (stars[cx, cy] != null)
             {
                 return stars[cx, cy].Visible;
             }
-            catch
+            else
             {
                 return false;
             }

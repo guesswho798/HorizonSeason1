@@ -10,60 +10,69 @@ namespace HorizonSeason1
     class Program
     {
         //there is a map for the stars but every other thing just has its own x and y just so things could go on each other
-        
-
-        ///ideas:
-        ///pops adds 0.something every cycle and will cost food per billion and you can stop births at 2 per family --> happiness down but growth stops
-        ///
+        //board URL = https://trello.com/b/yWm2HwiC/horizon-season-1
 
         public static GameManager manager;
 
         static void Main()
         {
+            //window stuff
             Console.Title = "Horizons: Season One";
             Console.CursorVisible = false;
             Console.SetWindowSize(131, 40);
 
-
+            //game manager
             manager = new GameManager();
-            
-            //start of program
-            string[] options = { "Start new game", "    credits", "     exit" };
+
             
             while (true)
             {
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.White;
-
                 Console.CursorVisible = false;
                 Console.Clear();
 
-                Console.WriteLine(@"
-                                                       _,'/
-       *                           *              _.-''._:
-                      *                   ,-:`-.-'    .:.|   *        *
-   *                                     ;-.''       .::.|                    
-                          _..------.._  / (:.       .:::.|          *
-                       ,'.   .. . .  .`/  : :.     .::::.|    * 
-                     ,'. .    .  .   ./    \ ::. .::::::.|
- *          *      ,'. .  .    .   . /      `.,,::::::::.;\       *
-                  /  .            . /       ,',';_::::::,:_:
-                 / . .  .   .      /      ,',','::`--'':;._;      *
-        *       : .             . /     ,',',':::::::_:'_,'
-                |..  .   .   .   /    ,',','::::::_:'_,'          *
-                |.              /,-. /,',':::::_:'_,'                *
-                | ..    .    . /) /-:/,'::::_:',-'          *
-         *      : . .     .   // / ,'):::_:',' ;
-                 \ .   .     // /,' /,-.','  ./   *              *
-                  \ . .  `::./,// ,'' ,'   . /
-                   `. .   . `;;;,/_.'' . . ,'            *          
-          *         ,`. .   :;;' `:.  .  ,'          *
-                  /   `-._,'  ..  ` _.-'
-                  (     _,'``------''       *                    *
-                   `--''");
+                //generating background
+                string s = "";
+                Random r = new Random();
+                for (int i = 0; i < 5239; i++)
+                    if (r.Next(0, 40) == 0)
+                        s += "*";
+                    else
+                        s += " ";
 
-                int selector = Menu(41, 7, options, false);
+                //drawing
+                Console.Write(s);
+                setCur(0, 7);
+                Console.Write(@"
+                                                                        *                  _,'/
+       *                                                                              _.-''._:
+                                                                              ,-:`-.-'    .:.|
+                      *                                                      ;-.''       .::.|
+                                                  *           _..------.._  / (:.       .:::.|
+                                                           ,'.   .. . .  .`/  : :.     .::::.|
+    *                                                    ,'. .    .  .   ./    \ ::. .::::::.|
+                                 *             *       ,'. .  .    .   . /      `.,,::::::::.;\
+                 *                                    /  .            . /       ,',';_::::::,:_:
+                                                     / . .  .   .      /      ,',','::`--'':;._;
+                                *                   : .             . /     ,',',':::::::_:'_,'
+             *                             *        |..  .   .   .   /    ,',','::::::_:'_,'
+                                                    |.              /,-. /,',':::::_:'_,'
+                                                    | ..    .    . /) /-:/,'::::_:',-'
+                                    *               : . .     .   // / ,'):::_:',' ;
+        *                                            \ .   .     // /,' /,-.','  ./
+                                                      \ . .  `::./,// ,'' ,'   . /
+                                              *        `. .   . `;;;,/_.'' . . ,'
+                                                        ,`. .   :;;' `:.  .  ,'
+                  *                 *                  /   `-._,'  ..  ` _.-'
+                                                      (     _,'``------''
+                                                        `--''");
 
+                //input
+                string[] options = { "Start new game", "    credits", "     exit" };
+                int selector = Menu(79, 11, options, false);
+
+                //output
                 switch (selector)
                 {
                     case 0:
@@ -79,6 +88,7 @@ namespace HorizonSeason1
             }
         }
 
+        //easy way to get input from player
         public static int Menu(int x, int y, string[] options, bool fullscreen = true, bool blue = false)
         {
             int max = options.Max(w => w.Length);
@@ -237,7 +247,7 @@ namespace HorizonSeason1
 
                 //showing info of system if visible
                 Console.ForegroundColor = ConsoleColor.White;
-                try
+                if (manager.Galaxy.Getstar() != null)
                 {
                     //in here i used the .visible to make sure that if there is no star then an error whould be triggerd
                     if (manager.Galaxy.Getstar().Visible)
@@ -251,7 +261,7 @@ namespace HorizonSeason1
                         manager.Galaxy.GetMap(offsetx, offsety);
                     }
                 }
-                catch
+                else
                 {
                     manager.clear(0, 2, 67, space + 1);
                     setCur(0, 2);
@@ -260,7 +270,7 @@ namespace HorizonSeason1
                 }
 
                 //stoping to read input
-                ConsoleKey key = Console.ReadKey(false).Key;
+                ConsoleKey key = Console.ReadKey(true).Key;
                 
                 if (key == ConsoleKey.Enter)
                 {
@@ -281,23 +291,25 @@ namespace HorizonSeason1
                         manager.Showmove = true;
                     }
                 }
-                //menu
                 if (key == ConsoleKey.Escape)
                 {
                     escape();
                     manager.Galaxy.GetMap(offsetx, offsety);
                 }
-                //next round
                 if (key == ConsoleKey.R)
                 {
                     manager.nextRound();
                     loadBackground(offsetx, offsety, space);
                     manager.Galaxy.GetMap(offsetx, offsety);
                 }
-                //tech tree
                 if (key == ConsoleKey.T)
                 {
                     techTree();
+                    manager.Galaxy.GetMap(offsetx, offsety);
+                }
+                if (key == ConsoleKey.F)
+                {
+                    fleetManager();
                     manager.Galaxy.GetMap(offsetx, offsety);
                 }
                 if (key == ConsoleKey.H)
@@ -471,6 +483,87 @@ namespace HorizonSeason1
             manager.Showmove = true;
         }
 
+        public static void fleetManager()
+        {
+
+            Console.Clear();
+            manager.Showmove = false;
+
+            int numOfFleets = 0;
+
+            fleet[] f = manager.Fleet;
+
+            for (int i = 0; i < f.Length; i++)
+            {
+                if (f[i] != null)
+                {
+                    f[i].GetInfo();
+                    numOfFleets++;
+                }
+            }
+
+            setCur(Console.WindowWidth / 2, Console.WindowHeight / 2);
+
+            if (numOfFleets == 0)
+            {
+                Console.CursorVisible = true;
+                Console.WriteLine("No Fleets...");
+                Console.CursorVisible = false;
+            }
+            else
+            {
+                //int i is used to go thrue all the fleets and counter is used to
+                //count the usable fleets to find which one is the last one that is an actual fleet
+                int counter = 1;
+
+                //title
+                setCur(Console.WindowWidth / 2 - 20, 6);
+                Console.Write("┌────────┬───────────────────────────────────────┐");
+                setCur(Console.WindowWidth / 2 - 20, 7);
+                Console.Write("│  Name  │                  Ships                │");
+                setCur(Console.WindowWidth / 2 - 20, 8);
+                Console.Write("├────────┼───────────────────────────────────────┤");
+
+
+                for (int i = 0; i < f.Length; i++)
+                {
+                    if (f[i] != null)
+                    {
+                        //calculating the space between each │ in the table
+                        string sn = ""; //space name
+                        for (int j = 0; j < 8 - f[i].Name.Length; j++) { sn += " "; }
+                        //string ss = ""; //space ships
+                        //for (int j = 0; j < 39 - f[i].getInfoString().Length; j++) { ss += " "; }
+
+                        setCur(Console.WindowWidth / 2 - 20, 6 + (i + 1) * 2);
+                        Console.Write("├────────┼───────────────────────────────────────┤");
+                        setCur(Console.WindowWidth / 2 - 20, 7 + (i + 1) * 2);
+                        Console.Write("│" + f[i].Name + sn + "│" + f[i].getInfoString());
+                        setCur(Console.WindowWidth / 2 + 29, 7 + (i + 1) * 2);
+                        Console.Write("│");
+                        setCur(Console.WindowWidth / 2 - 20, 8 + (i + 1) * 2);
+
+                        //not the last one
+                        if (counter != numOfFleets)
+                        {
+                            Console.Write("├────────┼───────────────────────────────────────┤");
+                        }
+                        //the last one
+                        else
+                        {
+                            Console.Write("└────────┴───────────────────────────────────────┘");
+                        }
+
+                        counter++;
+                    }
+                }
+            }
+
+            Console.ReadKey();
+            Console.Clear();
+            manager.Showmove = true;
+        }
+
         public static void escape()
         {
             Console.Clear();
@@ -492,11 +585,18 @@ namespace HorizonSeason1
                                         │                                                    │
                                         └────────────────────────────────────────────────────┘");
 
-            string[] options = {"Back","Credits" , "Options", "Exit"};
+            string[] options = {"Back", "Credits", "Options", "Exit"};
             switch (Menu(62, 11, options, false, true))
             {
-                case 2:
+                case 1:
                     Credits();
+                    break;
+                case 2:
+                    Console.Clear();
+                    Console.Write("Coming soon...");
+                    Console.CursorVisible = true;
+                    Console.ReadKey();
+                    Console.CursorVisible = false;
                     break;
                 case 3:
                     Environment.Exit(0);
@@ -508,7 +608,7 @@ namespace HorizonSeason1
 
         public static void loadBackground(int offsetx, int offsety, int planetsToShow = 0)
         {
-            #region square to galaxy
+            #region square around the galaxy
             setCur(offsetx - 1, offsety - 1);
             string line = "┌";
             for (int i = 0; i < manager.Galaxy.S; i++)
@@ -541,28 +641,37 @@ namespace HorizonSeason1
             Console.Write(line);
             #endregion
 
-            #region next round and tech buttons
+            #region next round, tech and fleet manager buttons
 
-            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 8);
+            //left side
+            setCur(0, Console.WindowHeight - 6);
+            Console.Write("───────────┐");
+            setCur(0, Console.WindowHeight - 5);
+            Console.Write(" Tech tree │");
+            setCur(0, Console.WindowHeight - 4);
+            Console.Write("  Press T  │");
+            setCur(0, Console.WindowHeight - 3);
+            Console.Write("───────────┴───┐");
+            setCur(0, Console.WindowHeight - 2);
+            Console.Write(" Fleet manager │");
+            setCur(0, Console.WindowHeight - 1);
+            Console.Write("    Press F    │");
+
+            //right side
+            setCur(Console.WindowWidth - 13, Console.WindowHeight - 5);
             Console.Write("┌────────────");
-            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 7);
-            Console.Write("│ tech tree");
-            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 6);
-            Console.Write("│  press T");
-            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 5);
-            Console.Write("├────────────");
-            Console.SetCursorPosition(Console.WindowWidth - 13, Console.WindowHeight - 4);
-            Console.Write("│ round = " + manager.Round);
-            Console.SetCursorPosition(Console.WindowWidth - 15, Console.WindowHeight - 3);
+            setCur(Console.WindowWidth - 13, Console.WindowHeight - 4);
+            Console.Write("│ Round = " + manager.Round);
+            setCur(Console.WindowWidth - 15, Console.WindowHeight - 3);
             Console.Write("┌─┴────────────");
-            Console.SetCursorPosition(Console.WindowWidth - 15, Console.WindowHeight - 2);
-            Console.Write("│ next round");
-            Console.SetCursorPosition(Console.WindowWidth - 15, Console.WindowHeight - 1);
-            Console.Write("│  press R");
+            setCur(Console.WindowWidth - 15, Console.WindowHeight - 2);
+            Console.Write("│ Next round");
+            setCur(Console.WindowWidth - 15, Console.WindowHeight - 1);
+            Console.Write("│  Press R");
             #endregion
 
             #region top resources info
-            Console.SetCursorPosition(3, 0);
+            setCur(3, 0);
             Console.WriteLine("Metals: " + manager.Metals + "   Energy: " + manager.Energy + "   Food: " + manager.Food + "   Happiness:  " + manager.Happiness + "   Tech:  " + manager.Tech);
 
             for (int i = 0; i < Console.WindowWidth; i++)
@@ -570,34 +679,32 @@ namespace HorizonSeason1
                 Console.Write("─");
             }
 
-            Console.SetCursorPosition(80, 1);
+            setCur(80, 1);
             Console.Write("┴");
-            Console.SetCursorPosition(80, 0);
+            setCur(80, 0);
             Console.Write("│");
             #endregion
 
-            #region round info
-            Console.SetCursorPosition(90, 1);
+            #region situation report
+            setCur(90, 1);
             Console.Write("┬");
             for (int i = 0; i < 13; i++)
             {
-                Console.SetCursorPosition(90, 2 + i);
+                setCur(90, 2 + i);
                 Console.Write("│");
             }
-            Console.SetCursorPosition(96, 3);
+            setCur(96, 3);
             Console.WriteLine("Situation Report");
-            Console.SetCursorPosition(96, 4);
+            setCur(96, 4);
             Console.WriteLine("────────────────");
 
-            Console.SetCursorPosition(90, 15);
+            setCur(90, 15);
             Console.WriteLine("└────────────────────────────────────────");
             #endregion
 
-            #region galaxy info
+            #region hovered system info
             if (planetsToShow != 0)
             {
-                
-
                 setCur(66, 1);
                 Console.Write("┬");
                 for (int i = 0; i < planetsToShow; i++)
@@ -638,14 +745,14 @@ namespace HorizonSeason1
                     {
                         switch (manager.Galaxy.Getstarname())
                         {
-                            case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.Write("*"); break;
-                            case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.Write("*"); break;
-                            case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; Console.Write("*"); break;
-                            case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; Console.Write("*"); break;
-                            case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; Console.Write("*"); break;
-                            case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; Console.Write(":"); break;
-                            case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; Console.Write("."); break;
-                            case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; Console.Write("."); break;
+                            case "White Sun": Console.ForegroundColor = ConsoleColor.White; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write("*"); Console.BackgroundColor = ConsoleColor.Black; break;
+                            case "Yellow Sun": Console.ForegroundColor = ConsoleColor.Yellow; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write("*"); Console.BackgroundColor = ConsoleColor.Black; break;
+                            case "Blue Sun": Console.ForegroundColor = ConsoleColor.Blue; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write("*"); Console.BackgroundColor = ConsoleColor.Black; break;
+                            case "Protostar": Console.ForegroundColor = ConsoleColor.Cyan; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write("*"); Console.BackgroundColor = ConsoleColor.Black; break;
+                            case "Red Supergiant": Console.ForegroundColor = ConsoleColor.Red; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write("*"); Console.BackgroundColor = ConsoleColor.Black; break;
+                            case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write(":"); Console.BackgroundColor = ConsoleColor.Black; break;
+                            case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write("."); Console.BackgroundColor = ConsoleColor.Black; break;
+                            case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write("."); Console.BackgroundColor = ConsoleColor.Black; break;
                             default: Console.Write(" "); break;
                         }
                         Console.ForegroundColor = ConsoleColor.White;

@@ -18,3 +18,4 @@ C:\Users\User\Documents\Github\HorizonSeason1\HorizonSeason1\HorizonSeason1\bin\
 C:\Users\User\Documents\Github\HorizonSeason1\HorizonSeason1\HorizonSeason1\obj\Debug\HorizonSeason1.csprojAssemblyReference.cache
 C:\Users\User\Documents\Github\HorizonSeason1\HorizonSeason1\HorizonSeason1\obj\Debug\HorizonSeason1.exe
 C:\Users\User\Documents\Github\HorizonSeason1\HorizonSeason1\HorizonSeason1\obj\Debug\HorizonSeason1.pdb
+C:\Users\User\Documents\GitHub\HorizonSeason1\HorizonSeason1\HorizonSeason1\obj\Debug\HorizonSeason1.csproj.CoreCompileInputs.cache

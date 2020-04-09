@@ -38,7 +38,7 @@ namespace HorizonSeason1
 
         public Planet(bool homestar, int[] array, int radius, Random rand, int position)
         {
-            hasShipyard = false;
+            hasShipyard = homestar;
             string name = "";
             int habitabilty = 0;
             this.creatureOwned = false;

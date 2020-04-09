@@ -142,13 +142,10 @@ namespace HorizonSeason1
             int counter = 0;
             for (int i = 0; i < Ships.Length; i++)
             {
-                try
+                if (ships[counter] != null)
                 {
                     names[i] = Ships[counter].Name;
                     counter++;
-                }
-                catch
-                {
                 }
             }
 
