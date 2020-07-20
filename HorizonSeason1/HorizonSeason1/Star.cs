@@ -30,7 +30,7 @@ namespace HorizonSeason1
         public int Range { get => range; set => range = value; }
         public string StarName { get => starName; set => starName = value; }
 
-        public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, string starname, bool homeStar = false)
+        public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, string starname, int x, int y, bool homeStar = false)
         {
             this.starName = starname;
             this.homeStar = homeStar;
@@ -38,6 +38,8 @@ namespace HorizonSeason1
             if (visible)
                 range = 7;
             this.counter = counter;
+            this.x = x;
+            this.y = y;
 
             //which star
             if (difficulty == 0 && id <= 19 || difficulty == 1 && id <= 7 || difficulty == 2 && id <= 7)
@@ -176,9 +178,9 @@ namespace HorizonSeason1
 
 
                 if (this.homeStar)
-                    planets[i] = new Planet(i == homePlanet, array, radius, rand, positionstaken[i]);
+                    planets[i] = new Planet(i == homePlanet, array, radius, rand, positionstaken[i], x, y);
                 else
-                    planets[i] = new Planet(false, array, radius, rand, positionstaken[i]);
+                    planets[i] = new Planet(false, array, radius, rand, positionstaken[i], x , y);
 
             }
 
@@ -198,12 +200,14 @@ namespace HorizonSeason1
                 case "White Dwarf": radius = 3; break;
             }
         }
-        public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, string starname, LifeForm life)
+        public Star(int id, int difficulty, int numofplanets, int num, Random rand, int counter, string starname, int x, int y, LifeForm life)
         {
             this.starName = starname;
             this.homeStar = false;
             this.counter = counter;
             this.visible = false;
+            this.x = x;
+            this.y = y;
 
             //which star
             if (difficulty == 0 && id <= 19 || difficulty == 1 && id <= 7 || difficulty == 2 && id <= 7)
@@ -322,10 +326,10 @@ namespace HorizonSeason1
                 if (i == homePlanet)
                 {
                     life.addPlanet(planets[i]);
-                    planets[i] = new Planet(array, radius, rand, positionstaken[i], life);
+                    planets[i] = new Planet(array, radius, rand, positionstaken[i], life, x, y);
                 }
                 else
-                    planets[i] = new Planet(false, array, radius, rand, positionstaken[i]); //empty planet
+                    planets[i] = new Planet(false, array, radius, rand, positionstaken[i], x , y); //empty planet
 
             }
 
@@ -437,11 +441,12 @@ namespace HorizonSeason1
         }
         public void drawplanets(int selected)
         {
-            int[,] offsettaken = new int[2, planets.Length];
+            //int[,] offsettaken = new int[2, planets.Length];
             for (int j = 0; j < planets.Length; j++)
             {
                 Console.ForegroundColor = ConsoleColor.White;
                 Planet p = planets[j];
+
 
                 Random rand = new Random();
 
@@ -662,6 +667,17 @@ namespace HorizonSeason1
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write("#");
                 }
+
+                //drawing fleet on planet
+                for (int i = 0; i < Program.manager.Fleet.Length; i++)
+                {
+                    if (Program.manager.Fleet[i] != null && Program.manager.Fleet[i].Place == p)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.SetCursorPosition(offsetx, offsety);
+                        Console.WriteLine("^");
+                    }
+                }
             }
 
             Console.ForegroundColor = ConsoleColor.White;
@@ -795,6 +811,8 @@ namespace HorizonSeason1
         public void menuUI(int selected)
         {
             Planet selectedP = planets[selected];
+
+            //selected a destroyed planet
             if (selectedP.TypeName == "Destroyed Planet")
             {
                 Console.BackgroundColor = ConsoleColor.Red;
@@ -802,18 +820,19 @@ namespace HorizonSeason1
                 Console.SetCursorPosition(105, 4);
                 Console.WriteLine("Search");
 
-                ConsoleKey key = Console.ReadKey().Key;
+                ConsoleKey key = Console.ReadKey(true).Key;
 
                 if (key == ConsoleKey.Enter)
                 {
                     //choose a fleet
                     Console.WriteLine("chosen");
-                    Console.ReadKey();
+                    Console.ReadKey(true);
                 }
 
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.ForegroundColor = ConsoleColor.White;
             }
+            //selected a player owned planet
             else if (selectedP.PlayerOwned)
             {
                 int selector = 4;
@@ -830,7 +849,7 @@ namespace HorizonSeason1
                     Console.Write(options[selector]);
 
                     //reciving input
-                    ConsoleKey key = Console.ReadKey().Key;
+                    ConsoleKey key = Console.ReadKey(true).Key;
 
                     //"deleting" trace
                     Console.BackgroundColor = ConsoleColor.Black;
@@ -867,6 +886,7 @@ namespace HorizonSeason1
                     }
                 }
             }
+            //selected a creature owned planet
             else if (selectedP.CreatureOwned)
             {
                 int selector = 4;
@@ -885,7 +905,7 @@ namespace HorizonSeason1
                     Console.Write(options[selector]);
 
                     //reciving input
-                    ConsoleKey key = Console.ReadKey().Key;
+                    ConsoleKey key = Console.ReadKey(true).Key;
 
                     //"deleting" trace
                     Console.BackgroundColor = ConsoleColor.Black;
@@ -919,6 +939,7 @@ namespace HorizonSeason1
                     }
                 }
             }
+            //selected an empty planet
             else
             {
                 //empty planet
@@ -937,7 +958,7 @@ namespace HorizonSeason1
                     Console.Write(options[selector]);
 
                     //reciving input
-                    ConsoleKey key = Console.ReadKey().Key;
+                    ConsoleKey key = Console.ReadKey(true).Key;
 
                     //"deleting" trace
                     Console.BackgroundColor = ConsoleColor.Black;
@@ -959,12 +980,14 @@ namespace HorizonSeason1
                             selector = 8;
                     }
                     else if (key == ConsoleKey.Enter)
-                    {
-                        //later
+                        if (selector == 4)
+                        {
+                            Program.fleetPicker(this.x, this.y, selectedP);
+                            
+                            break;
+                        }
                         if (selector == 8)
                             break;
-                        Console.WriteLine(options[selector]);
-                    }
                     else if (key == ConsoleKey.Escape || key == ConsoleKey.RightArrow || key == ConsoleKey.LeftArrow)
                     {
                         break;
@@ -994,9 +1017,7 @@ namespace HorizonSeason1
             }
 
             if (astroidbelt)
-            {
                 drawAstroidBelt();
-            }
             drawstar(Console.WindowWidth / 2 - radius * 6, Console.WindowHeight / 2 - radius);
             drawUI(selector);
 
@@ -1009,7 +1030,7 @@ namespace HorizonSeason1
 
 
                 //reciving input
-                ConsoleKey key = Console.ReadKey().Key;
+                ConsoleKey key = Console.ReadKey(true).Key;
                 if (key == ConsoleKey.RightArrow || key == ConsoleKey.D)
                 {
                     selector++;
@@ -1018,7 +1039,7 @@ namespace HorizonSeason1
                         selector = 0;
                     }
                 }
-                if (key == ConsoleKey.LeftArrow || key == ConsoleKey.A)
+                else if (key == ConsoleKey.LeftArrow || key == ConsoleKey.A)
                 {
                     selector--;
                     if (selector == -1)
@@ -1026,11 +1047,17 @@ namespace HorizonSeason1
                         selector = planets.Length - 1;
                     }
                 }
-                if (key == ConsoleKey.Enter)
+                else if (key == ConsoleKey.Enter)
                 {
                     menuUI(selector);
+                    Program.manager.Showmove = false;
+                    Program.manager.Show = false;
+                    drawUI(selector);
+                    drawstar(Console.WindowWidth / 2 - radius * 6, Console.WindowHeight / 2 - radius);
+                    if (astroidbelt)
+                        drawAstroidBelt();
                 }
-                if (key == ConsoleKey.Escape || key == ConsoleKey.Backspace)
+                else if (key == ConsoleKey.Escape || key == ConsoleKey.Backspace)
                 {
                     stay = false;
                 }
@@ -1132,7 +1159,7 @@ namespace HorizonSeason1
                     int buy = Program.Menu(105, 9, options1, false);
                     int numOfShips = 1;
                     Program.manager.clear(105, 9, Console.WindowWidth - 106, 20);
-                    if (buy == 0)
+                    if (buy == 0 || numOfShips == 0)
                     {
                         Console.SetCursorPosition(105, 9);
                         Console.WriteLine("Price per ship (Metal:" + Program.manager.Ships[selector].Price[0] + ", ");
@@ -1141,7 +1168,12 @@ namespace HorizonSeason1
                         Console.SetCursorPosition(105, 11);
                         Console.Write("How many(?): ");
                         Console.CursorVisible = true;
-                        numOfShips = int.Parse(Console.ReadLine());
+                        bool valid = true;
+                        while (valid)
+                        {
+                            try { numOfShips = int.Parse(Console.ReadLine()); valid = false; }
+                            catch { valid = true; Program.manager.clear(118, 11, 10, 2); Console.SetCursorPosition(118, 11); }
+                        } 
                         Console.CursorVisible = false;
                     }
 
@@ -1189,7 +1221,9 @@ namespace HorizonSeason1
                             Console.CursorVisible = true;
                             Console.SetCursorPosition(105, 4);
                             Console.Write("fleets name: ");
-                            Program.manager.Fleet[selector1] = new fleet(Console.ReadLine());
+                            string n = "";
+                            while (n == "") { n = Console.ReadLine(); Console.SetCursorPosition(118, 4); }
+                            Program.manager.Fleet[selector1] = new fleet(n, p, this.x, this.y);
                             Console.CursorVisible = false;
                             Program.manager.Fleet[selector1].add(s, numOfShips);
                         }
@@ -1201,7 +1235,7 @@ namespace HorizonSeason1
                         Console.SetCursorPosition(105, 10);
                         Console.Write("added to fleet: " + Program.manager.Fleet[selector1].Name + "...");
                         Console.CursorVisible = true;
-                        Console.ReadKey();
+                        Console.ReadKey(true);
                         Console.CursorVisible = false;
                     }
                     else if (buy == 1)

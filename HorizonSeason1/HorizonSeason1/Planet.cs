@@ -22,6 +22,8 @@ namespace HorizonSeason1
         private PlanetBuildings[] buildings;
         private PlanetBuildings[] buildingqueue;
         private bool hasShipyard;
+        private int x;
+        private int y;
 
 
         public string TypeName { get => typeName; set => typeName = value; }
@@ -35,8 +37,10 @@ namespace HorizonSeason1
         public LifeForm Life { get => life; set => life = value; }
         public bool HasShipyard { get => hasShipyard; set => hasShipyard = value; }
         public int ShipyardPosition { get => shipyardPosition; set => shipyardPosition = value; }
+        public int X { get => x; set => x = value; }
+        public int Y { get => y; set => y = value; }
 
-        public Planet(bool homestar, int[] array, int radius, Random rand, int position)
+        public Planet(bool homestar, int[] array, int radius, Random rand, int position, int x, int y)
         {
             hasShipyard = homestar;
             string name = "";
@@ -44,6 +48,8 @@ namespace HorizonSeason1
             this.creatureOwned = false;
             buildingqueue = new PlanetBuildings[0];
             buildings = new PlanetBuildings[0];
+            this.x = x;
+            this.y = y;
 
             if (homestar == false)
             {
@@ -180,7 +186,7 @@ namespace HorizonSeason1
             this.Position = position;
         }
 
-        public Planet(int[] array, int radius, Random rand, int position, LifeForm life)
+        public Planet(int[] array, int radius, Random rand, int position, LifeForm life, int x, int y)
         {
             hasShipyard = false;
             this.playerOwned = false;
@@ -189,6 +195,9 @@ namespace HorizonSeason1
             this.life = life;
             buildingqueue = new PlanetBuildings[0];
             buildings = new PlanetBuildings[0];
+            this.x = x;
+            this.y = y;
+
 
             //which planet
             switch (rand.Next(0, 3))

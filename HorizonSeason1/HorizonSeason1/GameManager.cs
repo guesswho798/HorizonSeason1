@@ -31,10 +31,10 @@ namespace HorizonSeason1
 
         public GameManager()
         {
-            this.metals = 1000;
-            this.energy = 1000;
-            this.food = 1000;
-            this.tech = 100;
+            this.metals = 10000;
+            this.energy = 10000;
+            this.food = 10000;
+            this.tech = 1000;
             this.pops = 1;
             this.happiness = 100;
             this.showmove = false;
@@ -75,41 +75,40 @@ namespace HorizonSeason1
             #region initialize ships
             
             Ships = new Ship[12];
-
+            
+            
+            Ships[0] = new Ship("Corvette", "Small strike craft.", new int[] { 50, 25, 0, 0, 0 }, 200, 100, 10, 5);
 
             
-            Ships[0] = new Ship("Corvette", "Small strike craft.", new int[] { 50, 25, 0, 0, 0 }, 200, 100, 10);
+            Ships[1] = new Ship("Cruiser", "Medium sized scout vessel.", new int[] { 100, 50, 0, 0, 0 }, 400, 200, 25, 5);
+
+
+            Ships[2] = new Ship("Destroyer", "Large combat vessel", new int[] { 150, 75, 0, 0, 0 }, 600, 400, 50, 2);
 
             
-            Ships[1] = new Ship("Cruiser", "Medium sized scout vessel.", new int[] { 100, 50, 0, 0, 0 }, 400, 200, 25);
+            Ships[3] = new Ship("Battlecruiser", "Massive combat vessel..", new int[] { 250, 100, 0, 0, 0 }, 1200, 600, 100, 2);
 
 
-            Ships[2] = new Ship("Destroyer", "Large combat vessel", new int[] { 150, 75, 0, 0, 0 }, 600, 400, 50);
-
-            
-            Ships[3] = new Ship("Battlecruiser", "Massive combat vessel..", new int[] { 250, 100, 0, 0, 0 }, 1200, 600, 100);
-
-
-            Ships[4] = new Ship("Battleship", "Gigantic combat vessel.", new int[] { 400, 200, 0, 0, 0 }, 2000, 1000, 200);
+            Ships[4] = new Ship("Battleship", "Gigantic combat vessel.", new int[] { 400, 200, 0, 0, 0 }, 2000, 1000, 200, 2);
             
 
-            Ships[5] = new Ship("Carrier", "Good against smaller craft, but needs escorts.", new int[] { 500, 300, 0, 0, 0 }, 200, 500, 100); //make this ignores shields on attacks
+            Ships[5] = new Ship("Carrier", "Good against smaller craft, but needs escorts.", new int[] { 500, 300, 0, 0, 0 }, 200, 500, 100, 6); //make this ignores shields on attacks
             
 
-            Ships[6] = new Ship("Titan", "Practically indestructible. Size of a moon.", new int[] { 2000, 800, 0, 0, 0 }, 8000, 4000, 400);
+            Ships[6] = new Ship("Titan", "Practically indestructible. Size of a moon.", new int[] { 2000, 800, 0, 0, 0 }, 8000, 4000, 400, 1);
 
             
             //Production Ships
-            Ships[7] = new Ship("Colonizer", "Colonizes new planets", new int[] { 50, 25, 0, 0, 1 }, 100, 100, 0);
+            Ships[7] = new Ship("Colonizer", "Colonizes new planets", new int[] { 50, 25, 0, 0, 1 }, 100, 100, 0, 2);
 
             
-            Ships[8] = new Ship("Miner", "Produces 25 of the resource its harvesting", new int[] { 50, 25, 0, 0, 0 }, 100, 100, 0);
+            Ships[8] = new Ship("Miner", "Produces 25 of the resource its harvesting", new int[] { 50, 25, 0, 0, 0 }, 100, 100, 0, 8);
 
             
-            Ships[9] = new Ship("Science Ship", "Scans new star systems", new int[] { 50, 25, 0, 0, 0 }, 100, 100, 0);
+            Ships[9] = new Ship("Science Ship", "Scans new star systems", new int[] { 50, 25, 0, 0, 0 }, 100, 100, 0, 8);
 
             
-            Ships[10] = new Ship("Trade Ship", "Produces 50 Energy per turn", new int[] { 50, 25, 0, 0, 0 }, 100, 100, 0);
+            Ships[10] = new Ship("Trade Ship", "Produces 50 Energy per turn", new int[] { 50, 25, 0, 0, 0 }, 100, 100, 0, 9);
             #endregion
 
         }
@@ -169,9 +168,28 @@ namespace HorizonSeason1
         public void nextRound()
         {
             round++;
+
+            //rotating planets
             for (int i = 0; i < galaxy.Xy.Length; i++)
             {
                 galaxy.Xy[i].turn();
+            }
+
+            //moving fleets
+            for (int i = 0; i < fleet.Length; i++)
+            {
+                if (fleet[i] != null && fleet[i].Eta > 0)
+                {
+                    fleet[i].Eta--;
+                    if (fleet[i].Eta == 0)
+                    {
+                        //later add notification that fleet arived at location
+                        fleet[i].Place = fleet[i].Target;
+                        fleet[i].X = fleet[i].Place.X;
+                        fleet[i].Y = fleet[i].Place.Y;
+                        fleet[i].Target = null;
+                    }
+                }
             }
         }
 

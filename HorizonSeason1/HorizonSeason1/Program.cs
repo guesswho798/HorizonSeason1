@@ -45,32 +45,32 @@ namespace HorizonSeason1
                 Console.Write(s);
                 setCur(0, 7);
                 Console.Write(@"
-                                                                        *                  _,'/
-       *                                                                              _.-''._:
-                                                                              ,-:`-.-'    .:.|
-                      *                                                      ;-.''       .::.|
-                                                  *           _..------.._  / (:.       .:::.|
-                                                           ,'.   .. . .  .`/  : :.     .::::.|
-    *                                                    ,'. .    .  .   ./    \ ::. .::::::.|
-                                 *             *       ,'. .  .    .   . /      `.,,::::::::.;\
-                 *                                    /  .            . /       ,',';_::::::,:_:
-                                                     / . .  .   .      /      ,',','::`--'':;._;
-                                *                   : .             . /     ,',',':::::::_:'_,'
-             *                             *        |..  .   .   .   /    ,',','::::::_:'_,'
-                                                    |.              /,-. /,',':::::_:'_,'
-                                                    | ..    .    . /) /-:/,'::::_:',-'
-                                    *               : . .     .   // / ,'):::_:',' ;
-        *                                            \ .   .     // /,' /,-.','  ./
-                                                      \ . .  `::./,// ,'' ,'   . /
-                                              *        `. .   . `;;;,/_.'' . . ,'
-                                                        ,`. .   :;;' `:.  .  ,'
-                  *                 *                  /   `-._,'  ..  ` _.-'
-                                                      (     _,'``------''
-                                                        `--''");
+                                                          *                  _,'/
+       *                                                                _.-''._:
+                                                                ,-:`-.-'    .:.|
+                      *                                        ;-.''       .::.|
+                                    *           _..------.._  / (:.       .:::.|
+                                             ,'.   .. . .  .`/  : :.     .::::.|
+    *                                      ,'. .    .  .   ./    \ ::. .::::::.|
+                                 *       ,'. .  .    .   . /      `.,,::::::::.;\
+                 *                      /  .            . /       ,',';_::::::,:_:
+                                       / . .  .   .      /      ,',','::`--'':;._;
+                                *     : .             . /     ,',',':::::::_:'_,'
+             *                        |..  .   .   .   /    ,',','::::::_:'_,'
+                                      |.              /,-. /,',':::::_:'_,'
+                                      | ..    .    . /) /-:/,'::::_:',-'
+                                      : . .     .   // / ,'):::_:',' ;
+        *                              \ .   .     // /,' /,-.','  ./
+                                        \ . .  `::./,// ,'' ,'   . /
+                                         `. .   . `;;;,/_.'' . . ,'
+                                          ,`. .   :;;' `:.  .  ,'
+                  *                      /   `-._,'  ..  ` _.-'
+                                        (     _,'``------''
+                                         `--''");
 
                 //input
                 string[] options = { "Start new game", "    credits", "     exit" };
-                int selector = Menu(79, 11, options, false);
+                int selector = Menu(65, 11, options, false);
 
                 //output
                 switch (selector)
@@ -137,7 +137,7 @@ namespace HorizonSeason1
                 }
                 else if (key == ConsoleKey.Enter)
                 {
-                    break;
+                    return selector;
                 }
 
                 //writing options
@@ -160,9 +160,9 @@ namespace HorizonSeason1
                 }
 
                 //getting input
-                key = Console.ReadKey(false).Key;
+                key = Console.ReadKey(true).Key;
             }
-            return selector;
+            
         }
 
         public static void Credits()
@@ -196,12 +196,6 @@ namespace HorizonSeason1
 
             Console.Clear();
 
-            string[] mapsize = {"1.small", "2.normal", "3.big" };
-            Console.WriteLine("\n\n                                                       size of map:");
-            int size = Menu(width, 3, mapsize);
-            size = 1;
-            Console.Clear();
-
             string[] mapdensity = { "1.spacious", "2.normal", "3.dense" };
             Console.WriteLine("\n\n                                                       density of galaxy:");
             int dense = Menu(width, 3, mapdensity);
@@ -218,7 +212,7 @@ namespace HorizonSeason1
             Console.WriteLine("creating a new galaxy...\n");
 
 
-            manager.Galaxy = new Galaxy(difficulty, size, dense, rand);
+            manager.Galaxy = new Galaxy(difficulty, dense, rand);
 
             Thread t = new Thread(blink);
             t.IsBackground = true;
@@ -233,8 +227,9 @@ namespace HorizonSeason1
 
         public static void Game(int offsetx, int offsety)
         {
+            //drawing the background and map
             loadBackground(offsetx, offsety, manager.Galaxy.Getstar().Planets.Length + 1);
-            manager.Galaxy.GetMap(offsetx, offsety);
+            manager.Galaxy.GetMap(manager.Fleet, offsetx, offsety);
 
             manager.Showmove = true;
             int space = 0;
@@ -258,7 +253,7 @@ namespace HorizonSeason1
                         setCur(0, 2);
                         Console.WriteLine(manager.Galaxy.Getstar().GetInfo());
                         loadBackground(offsetx, offsety, space);
-                        manager.Galaxy.GetMap(offsetx, offsety);
+                        manager.Galaxy.GetMap(manager.Fleet, offsetx, offsety);
                     }
                 }
                 else
@@ -266,7 +261,7 @@ namespace HorizonSeason1
                     manager.clear(0, 2, 67, space + 1);
                     setCur(0, 2);
                     loadBackground(offsetx, offsety);
-                    manager.Galaxy.GetMap(offsetx, offsety);
+                    manager.Galaxy.GetMap(manager.Fleet, offsetx, offsety);
                 }
 
                 //stoping to read input
@@ -274,7 +269,7 @@ namespace HorizonSeason1
                 
                 if (key == ConsoleKey.Enter)
                 {
-                    try
+                    if (manager.Galaxy.Getstar() != null)
                     {
                         manager.Galaxy.Getstarname(); //checking if place has a system
                         manager.Showmove = false;
@@ -282,11 +277,11 @@ namespace HorizonSeason1
                         manager.Galaxy.Getstar().drawSystem(); //drawing the system
                         manager.Showmove = true;
                         loadBackground(offsetx,offsety, space);
-                        manager.Galaxy.GetMap(offsetx, offsety);
+                        manager.Galaxy.GetMap(manager.Fleet, offsetx, offsety);
                     }
-                    catch
+                    else
                     {
-                        manager.Galaxy.GetMap(offsetx, offsety);
+                        manager.Galaxy.GetMap(manager.Fleet, offsetx, offsety);
                         manager.Show = true;
                         manager.Showmove = true;
                     }
@@ -294,25 +289,25 @@ namespace HorizonSeason1
                 if (key == ConsoleKey.Escape)
                 {
                     escape();
-                    manager.Galaxy.GetMap(offsetx, offsety);
+                    manager.Galaxy.GetMap(manager.Fleet, offsetx, offsety);
                 }
                 if (key == ConsoleKey.R)
                 {
                     manager.nextRound();
                     loadBackground(offsetx, offsety, space);
-                    manager.Galaxy.GetMap(offsetx, offsety);
+                    manager.Galaxy.GetMap(manager.Fleet, offsetx, offsety);
                 }
                 if (key == ConsoleKey.T)
                 {
                     techTree();
-                    manager.Galaxy.GetMap(offsetx, offsety);
+                    manager.Galaxy.GetMap(manager.Fleet, offsetx, offsety);
                 }
                 if (key == ConsoleKey.F)
                 {
                     fleetManager();
-                    manager.Galaxy.GetMap(offsetx, offsety);
+                    manager.Galaxy.GetMap(manager.Fleet, offsetx, offsety);
                 }
-                if (key == ConsoleKey.H)
+                if (key == ConsoleKey.H) //delete this later
                 {
                     manager.Galaxy.Getstar().HomeStar = true;
                 }
@@ -320,7 +315,6 @@ namespace HorizonSeason1
                 //deleting trace
                 if (key == ConsoleKey.UpArrow || key == ConsoleKey.DownArrow || key == ConsoleKey.LeftArrow || key == ConsoleKey.RightArrow)
                 {
-                    //deleting trace
                     setCur(manager.Galaxy.Getx() + offsetx, manager.Galaxy.Gety() + offsety);
                     if (manager.Galaxy.Getstarvisible())
                     {
@@ -509,53 +503,54 @@ namespace HorizonSeason1
                 Console.CursorVisible = true;
                 Console.WriteLine("No Fleets...");
                 Console.CursorVisible = false;
+                return;
             }
-            else
+
+            //int i is used to go thrue all the fleets and counter is used to
+            //count the usable fleets to find which one is the last one that is an actual fleet
+            int counter = 1;
+
+            //title
+            setCur(Console.WindowWidth / 2 - 20, 6);
+            Console.Write("┌────────┬───────────────────────────────────────┬────────┬────────┐");
+            setCur(Console.WindowWidth / 2 - 20, 7);
+            Console.Write("│  Name  │                  Ships                │ (x,y)  │  ETA   │");
+            setCur(Console.WindowWidth / 2 - 20, 8);
+            Console.Write("├────────┼───────────────────────────────────────┼────────┼────────┤");
+
+
+            for (int i = 0; i < f.Length; i++)
             {
-                //int i is used to go thrue all the fleets and counter is used to
-                //count the usable fleets to find which one is the last one that is an actual fleet
-                int counter = 1;
-
-                //title
-                setCur(Console.WindowWidth / 2 - 20, 6);
-                Console.Write("┌────────┬───────────────────────────────────────┐");
-                setCur(Console.WindowWidth / 2 - 20, 7);
-                Console.Write("│  Name  │                  Ships                │");
-                setCur(Console.WindowWidth / 2 - 20, 8);
-                Console.Write("├────────┼───────────────────────────────────────┤");
-
-
-                for (int i = 0; i < f.Length; i++)
+                if (f[i] != null)
                 {
-                    if (f[i] != null)
+                    //calculating the space between each │ in the table
+                    string sn = ""; //space name
+                    for (int j = 0; j < 8 - f[i].Name.Length; j++) { sn += " "; }
+
+                    setCur(Console.WindowWidth / 2 - 20, 6 + (i + 1) * 2);
+                    Console.Write("├────────┼───────────────────────────────────────┼────────┼────────┤");
+                    setCur(Console.WindowWidth / 2 - 20, 7 + (i + 1) * 2);
+                    Console.Write("│" + f[i].Name + sn + "│" + f[i].getInfoString());
+                    setCur(Console.WindowWidth / 2 + 29, 7 + (i + 1) * 2);
+                    Console.Write("│ (" + f[i].X + "," + f[i].Y + ")");
+                    setCur(Console.WindowWidth / 2 + 38, 7 + (i + 1) * 2);
+                    Console.Write("│  " + f[i].Eta + " / R");
+                    setCur(Console.WindowWidth / 2 + 47, 7 + (i + 1) * 2);
+                    Console.Write("│");
+                    setCur(Console.WindowWidth / 2 - 20, 8 + (i + 1) * 2);
+
+                    //not the last one
+                    if (counter != numOfFleets)
                     {
-                        //calculating the space between each │ in the table
-                        string sn = ""; //space name
-                        for (int j = 0; j < 8 - f[i].Name.Length; j++) { sn += " "; }
-                        //string ss = ""; //space ships
-                        //for (int j = 0; j < 39 - f[i].getInfoString().Length; j++) { ss += " "; }
-
-                        setCur(Console.WindowWidth / 2 - 20, 6 + (i + 1) * 2);
-                        Console.Write("├────────┼───────────────────────────────────────┤");
-                        setCur(Console.WindowWidth / 2 - 20, 7 + (i + 1) * 2);
-                        Console.Write("│" + f[i].Name + sn + "│" + f[i].getInfoString());
-                        setCur(Console.WindowWidth / 2 + 29, 7 + (i + 1) * 2);
-                        Console.Write("│");
-                        setCur(Console.WindowWidth / 2 - 20, 8 + (i + 1) * 2);
-
-                        //not the last one
-                        if (counter != numOfFleets)
-                        {
-                            Console.Write("├────────┼───────────────────────────────────────┤");
-                        }
-                        //the last one
-                        else
-                        {
-                            Console.Write("└────────┴───────────────────────────────────────┘");
-                        }
-
-                        counter++;
+                        Console.Write("├────────┼───────────────────────────────────────┼────────┼────────┤");
                     }
+                    //the last one
+                    else
+                    {
+                        Console.Write("└────────┴───────────────────────────────────────┴────────┴────────┘");
+                    }
+
+                    counter++;
                 }
             }
 
@@ -563,7 +558,125 @@ namespace HorizonSeason1
             Console.Clear();
             manager.Showmove = true;
         }
+        public static void fleetPicker(int x, int y, Planet p)
+        {
+            Console.Clear();
+            manager.Showmove = false;
 
+            int numOfFleets = 0;
+
+            fleet[] f = manager.Fleet;
+
+            for (int i = 0; i < f.Length; i++)
+            {
+                if (f[i] != null)
+                {
+                    f[i].calcETA(x, y);
+                    numOfFleets++;
+                }
+            }
+
+
+            if (numOfFleets == 0)
+            {
+                Console.CursorVisible = true;
+                setCur(Console.WindowWidth / 2, Console.WindowHeight / 2);
+                Console.WriteLine("No Fleets...");
+                Console.CursorVisible = false;
+                return;
+            }
+            int selector = 1;
+            while (true)
+            {
+                Console.Clear();
+
+                //int i is used to go thrue all the fleets and counter is used to
+                //count the usable fleets to find which one is the last one that is an actual fleet
+                int counter = 1;
+
+                //title
+                setCur(Console.WindowWidth / 2 - 20, 6);
+                Console.Write("┌────────┬───────────────────────────────────────┬───────┬───────┐");
+                setCur(Console.WindowWidth / 2 - 20, 7);
+                Console.Write("│  Name  │                  Ships                │ speed │  ETA  │");
+                setCur(Console.WindowWidth / 2 - 20, 8);
+                Console.Write("├────────┼───────────────────────────────────────┼───────┼───────┤");
+
+
+                for (int i = 0; i < f.Length; i++)
+                {
+                    if (f[i] != null)
+                    {
+                        //calculating the space between each │ in the table
+                        string sn1 = ""; //space name
+                        string sn2 = ""; //space ships
+                        for (int j = 0; j < 8 - f[i].Name.Length; j++) { sn1 += " "; }
+                        for (int j = 0; j < 39 - f[i].getInfoString().Length; j++) { sn2 += " "; }
+
+                        setCur(Console.WindowWidth / 2 - 20, 6 + (i + 1) * 2);
+                        Console.Write("├────────┼───────────────────────────────────────┼───────┼───────┤");
+                        setCur(Console.WindowWidth / 2 - 20, 7 + (i + 1) * 2);
+                        Console.Write("│                                                                │");
+
+                        if (selector == counter)
+                            Console.BackgroundColor = ConsoleColor.Red;
+                        setCur(Console.WindowWidth / 2 - 19, 7 + (i + 1) * 2);
+                        Console.Write(f[i].Name + sn1);
+                        Console.BackgroundColor = ConsoleColor.Black;
+
+                        Console.Write("│" + f[i].getInfoString() + sn2 + "│" + "   " + f[i].getSpeed() + "   │" + f[i].calcETA(x, y) + " / R");
+
+                        setCur(Console.WindowWidth / 2 - 20, 8 + (i + 1) * 2);
+
+                        //not the last one
+                        if (counter != numOfFleets)
+                        {
+                            Console.Write("├────────┼───────────────────────────────────────┼───────┼───────┤");
+                        }
+                        //the last one
+                        else
+                        {
+                            Console.Write("└────────┴───────────────────────────────────────┴───────┴───────┘");
+                        }
+
+                        counter++;
+                    }
+                }
+
+                //input
+                ConsoleKey key = Console.ReadKey(true).Key;
+                if (key == ConsoleKey.DownArrow || key == ConsoleKey.S)
+                {
+                    selector++;
+                    if (selector == counter)
+                    {
+                        selector = 1;
+                    }
+                }
+                if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
+                {
+                    selector--;
+                    if (selector == 0)
+                    {
+                        selector = counter - 1;
+                    }
+                }
+                if (key == ConsoleKey.Escape)
+                {
+                    break;
+                }
+                if (key == ConsoleKey.Enter)
+                {
+                    selector--;
+                    //x and y to calc distance, true to lunch and p is the target planet
+                    f[selector].calcETA(x, y, true, p);
+                    break;
+                }
+            }
+
+            Console.Clear();
+            manager.Showmove = true;
+        }
         public static void escape()
         {
             Console.Clear();
@@ -753,7 +866,7 @@ namespace HorizonSeason1
                             case "Binary": Console.ForegroundColor = ConsoleColor.Magenta; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write(":"); Console.BackgroundColor = ConsoleColor.Black; break;
                             case "Red Dwarf": Console.ForegroundColor = ConsoleColor.Red; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write("."); Console.BackgroundColor = ConsoleColor.Black; break;
                             case "White Dwarf": Console.ForegroundColor = ConsoleColor.White; Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write("."); Console.BackgroundColor = ConsoleColor.Black; break;
-                            default: Console.Write(" "); break;
+                            default: Console.BackgroundColor = ConsoleColor.DarkGreen; Console.Write(" "); break;
                         }
                         Console.ForegroundColor = ConsoleColor.White;
                         manager.Show = false;

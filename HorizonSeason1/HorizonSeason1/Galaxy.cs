@@ -13,17 +13,15 @@ namespace HorizonSeason1
         private int numOfStars;
         private Star[] xy;
         private LifeForm[] lifeForms;
-        private string[] names = new string[45];
+        private string[] names = new string[50];
 
         public int S { get => s; set => s = value; }
         public LifeForm[] LifeForms { get => lifeForms; set => lifeForms = value; }
         public Star[] Xy { get => xy; set => xy = value; }
 
-        public Galaxy(int difficulty, int size, int dense, Random rand)
+        public Galaxy(int difficulty, int dense, Random rand)
         {
-
             #region making names for stars
-            
             names[0] = "Zura";
             names[1] = "Lightaiat";
             names[2] = "Mudwauy";
@@ -69,83 +67,32 @@ namespace HorizonSeason1
             names[42] = "Neptomon";
             names[43] = "Marette";
             names[44] = "Liasaur";
+            names[45] = "Cruentums";
+            names[46] = "Pliatsikt";
+            names[47] = "Bliabror";
+            names[48] = "Iblaaziph";
+            names[49] = "Ushualsox";
             #endregion
-
 
             switch (dense)
             {
                 case 0:
-                    if (size == 0)
-                    {
-                        this.y = 10;
-                        this.x = 15;
-                    }
-                    else if (size == 1)
-                    {
-                        this.y = 15;
-                        this.x = 20;
-                    }
-                    else if (size == 2)
-                    {
-                        this.y = 20;
-                        this.x = 25;
-                    }
+                    this.y = 15;
+                    this.x = 20;
                     break;
                 case 1:
-                    if (size == 0)
-                    {
-                        this.y = 15;
-                        this.x = 20;
-                    }
-                    else if (size == 1)
-                    {
-                        this.y = 20;
-                        this.x = 25;
-                    }
-                    else if (size == 2)
-                    {
-                        this.y = 25;
-                        this.x = 30;
-                    }
+                    this.y = 20;
+                    this.x = 25;
                     break;
                 case 2:
-                    if (size == 0)
-                    {
-                        this.y = 20;
-                        this.x = 25;
-                    }
-                    else if (size == 1)
-                    {
-                        this.y = 25;
-                        this.x = 30;
-                    }
-                    else if (size == 2)
-                    {
-                        this.y = 30;
-                        this.x = 35;
-                    }
+                    this.y = 25;
+                    this.x = 30;
                     break;
             }
 
-            if (size == 0)
-            {
-                size = 30;
-            }
-            else if (size == 1)
-            {
-                size = 45;
-            }
-            else if (size == 2)
-            {
-                size = 60;
-            }
-            else
-            {
-                size = 45;
-            }
-            this.s = size;
+            this.s = 45;
 
-            stars = new Star[size, size / 2];
+            stars = new Star[this.s, this.s / 2];
             this.numOfStars = rand.Next(y, x);
             int homeStar = rand.Next(2, numOfStars - 1);
 
@@ -176,7 +123,7 @@ namespace HorizonSeason1
                                 string name = "";
                                 while (stay)
                                 {
-                                    int nameindex = rand.Next(0, 45);
+                                    int nameindex = rand.Next(0, names.Length);
                                     if (names[nameindex] != "")
                                     {
                                         stay = false;
@@ -192,18 +139,18 @@ namespace HorizonSeason1
                                     {
                                         
                                         //the first rand is for what star it whould be and the secound rand is for how many planets will be
-                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, name, lifeForms[counterLifForms]);
+                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, name, x, y, lifeForms[counterLifForms]);
                                         counterLifForms++;
                                     }
                                     else
                                     {
                                          //the first rand is for what star it whould be and the secound rand is for how many planets will be
-                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, name);
+                                        stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, name, x, y);
                                     }
                                 }
                                 else
                                 {
-                                    stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, name, true);
+                                    stars[x, y] = new Star(rand.Next(0, 101), difficulty, dense, rand.Next(0, 101), rand, counter, name, x, y, true);
                                     //starting point wil be home planet
                                     cx = x;
                                     cy = y;
@@ -255,7 +202,7 @@ namespace HorizonSeason1
             }
         }
 
-        public void GetMap(int offsetx = 0, int offsety = 0)
+        public void GetMap(fleet[] f, int offsetx = 0, int offsety = 0)
         {
             //the color of the scanned area
             Console.BackgroundColor = ConsoleColor.DarkGreen;
@@ -266,7 +213,8 @@ namespace HorizonSeason1
             {
                 Star s = stars[xy[i].getx(), xy[i].gety()];
 
-                if (s.HomeStar) //calculating distence from owned stars
+                //calculating distence from owned stars
+                if (s.HomeStar)
                 {
                     double r_in = s.Range - 0.0;
                     double r_out = s.Range + 0.1;
@@ -337,7 +285,10 @@ namespace HorizonSeason1
                 }
             }
             Console.BackgroundColor = ConsoleColor.Black;
+
+            //DrawFleet(f, offsetx, offsety); was supposed to draw fleets in the galaxy
         }
+        
 
         public int Getx()
         {
@@ -358,11 +309,11 @@ namespace HorizonSeason1
 
         public string Getstarname()
         {
-            try
+            if (stars[cx, cy] != null)
             {
                 return stars[cx, cy].getName();
             }
-            catch
+            else
             {
                 return "";
             }

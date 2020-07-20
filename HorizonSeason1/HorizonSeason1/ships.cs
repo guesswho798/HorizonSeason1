@@ -15,8 +15,9 @@ namespace HorizonSeason1
         private int hp;
         private int shield;
         private int damage;
+        private int speed;
 
-        public Ship(string name, string description, int[] price, int hp, int shield, int damage)
+        public Ship(string name, string description, int[] price, int hp, int shield, int damage, int speed)
         {
 
             //split to two because is too long
@@ -52,6 +53,7 @@ namespace HorizonSeason1
             this.hp = hp;
             this.shield = shield;
             this.damage = damage;
+            this.speed = speed;
         }
 
         public string Name { get => name; set => name = value; }
@@ -61,6 +63,7 @@ namespace HorizonSeason1
         public int Damage { get => damage; set => damage = value; }
         public int Hp { get => hp; set => hp = value; }
         public int Shield { get => shield; set => shield = value; }
+        public int Speed { get => speed; set => speed = value; }
 
         public void Add(int number, int fleetnumber)
         {
@@ -84,8 +87,7 @@ namespace HorizonSeason1
         }
         public Ship copy()
         {
-            Ship s = new Ship(name, description, price, hp, shield, damage);
-            return s;
+            return new Ship(name, description, price, hp, shield, damage, speed);
         }
         public void upgrade()
         {

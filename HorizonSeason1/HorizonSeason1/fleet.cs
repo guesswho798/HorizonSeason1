@@ -15,12 +15,22 @@ namespace HorizonSeason1
         private int shield;
         private int numOfShips;
         private Ship[] ships;
+        private int x;
+        private int y;
+        private Planet place;     //place of fleet
+        private Planet target;    //target planet
+        private int eta;          //estimated time of arrival
 
 
         public static int FleetId { get => fleetId; set => fleetId = value; }
         public string Name { get => name; set => name = value; }
+        public int X { get => x; set => x = value; }
+        public int Y { get => y; set => y = value; }
+        public Planet Place { get => place; set => place = value; }
+        public int Eta { get => eta; set => eta = value; }
+        public Planet Target { get => target; set => target = value; }
 
-        public fleet(string name)
+        public fleet(string name, Planet place, int x, int y)
         {
             this.name = name;
             ships = new Ship[50];
@@ -29,13 +39,16 @@ namespace HorizonSeason1
             shield = 0;
             numOfShips = 0;
             fleetId++;
+            this.x = x;
+            this.y = y;
+            this.place = place;
         }
 
         public void add(Ship s, int number)
         {
             for (int i = 0; i < number; i++)
             {
-                ships[numOfShips] = s;
+                ships[numOfShips] = s.copy();
                 this.numOfShips++;
             }
             
@@ -43,7 +56,6 @@ namespace HorizonSeason1
             //this.hp += hp * number;
             //this.shield += shield * number;
         }
-
         public void subtract(int damage)
         {
             int tmp = 0;
@@ -60,6 +72,11 @@ namespace HorizonSeason1
             {
                 hp -= damage;
             }
+        }
+        public void lunch(Planet p)
+        {
+            this.place = null;
+            this.target = p;
         }
 
         public Ship[] GetInfo()
@@ -130,6 +147,45 @@ namespace HorizonSeason1
         public int Getatt()
         {
             return attackPoints;
+        }
+        public int getSpeed()
+        {
+            int min = ships[0].Speed;
+
+            for (int i = 0; i < ships.Length; i++)
+            {
+                
+                if (ships[i] != null && ships[i].Speed < min)
+                {
+                    if (ships[i].Speed == 0)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("hit 0");
+                        Console.WriteLine(ships[i].Name);
+                        Console.WriteLine(ships[i].Speed);
+                        Console.WriteLine(ships[i].Hp);
+                        Console.ReadKey();
+                    }
+                    min = ships[i].Speed;
+                }
+            }
+
+            return min;
+        }
+        public int calcETA(int x, int y, bool lunch=false, Planet p=null)
+        {
+            int eta = Math.Abs(this.X - x) + Math.Abs(this.Y - y) / this.getSpeed();
+
+            if (eta <= 0)
+                eta = 1;
+
+            if (lunch)
+            {
+                this.eta = eta;
+                this.lunch(p);
+            }
+
+            return eta;
         }
     }
 }
