@@ -358,121 +358,192 @@ namespace HorizonSeason1
             Console.Clear();
             manager.Showmove = false;
 
+            for (int x = 0; x < manager.Techcards.GetLength(0); x++)
+            {
+                for (int y = 0; y < manager.Techcards.GetLength(1); y++)
+                {
+                    if (manager.Techcards[x, y] == null)
+                    {
+                        continue;
+                    }
 
-            setCur(100, 4);
-            Console.WriteLine("Engineering");
+                    if (manager.Techcards[x, y].Active)
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    else
+                        Console.ForegroundColor = ConsoleColor.White;
 
-            #region Physics
-            setCur(10, 3);
-            Console.WriteLine("┌─────────┐");
-            setCur(10, 4);
-            Console.WriteLine("│ Physics │");
-            setCur(10, 5);
-            Console.WriteLine("├─────────┴──────────────┐");
-            setCur(10, 6);
-            Console.WriteLine("│   * Laser cannon       │");
-            setCur(10, 7);
-            Console.WriteLine("│   * Space Scanner      │");
-            setCur(10, 8);
-            Console.WriteLine("│                        │");
-            setCur(10, 9);
-            Console.WriteLine("│     Tech Points = 50   │");
-            setCur(10, 10);
-            Console.WriteLine("│     Turns = 10         │");
-            setCur(10, 11);
-            Console.WriteLine("└──────┬─────────────────┘");
-            setCur(10, 12);
-            Console.WriteLine("       │");
-            setCur(10, 13);
-            Console.WriteLine("┌──────┴─────────┐");
-            setCur(10, 14);
-            Console.WriteLine("│ Fusion Physics │");
-            setCur(10, 15);
-            Console.WriteLine("├────────────────┴───────┐");
-            setCur(10, 16);
-            Console.WriteLine("│   * Fusion Rifle       │");
-            setCur(10, 17);
-            Console.WriteLine("│   * fusion Beam        │");
-            setCur(10, 18);
-            Console.WriteLine("│                        │");
-            setCur(10, 19);
-            Console.WriteLine("│     Tech Points = 75   │");
-            setCur(10, 20);
-            Console.WriteLine("│     Turns = 15         │");
-            setCur(10, 21);
-            Console.WriteLine("└────────────────────────┘");
-            #endregion
+                    if (manager.Techcards[x, y].Done)
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
 
-            /*
-            setCur(50, 3);
-            Console.WriteLine("┌─────────┐");
-            setCur(50, 4);
-            Console.WriteLine("│ Society │");
-            setCur(50, 5);
-            Console.WriteLine("├─────────┴──────────────┐");
-            setCur(50, 6);
-            Console.WriteLine("│   * Laser cannon       │");
-            setCur(50, 7);
-            Console.WriteLine("│   * Space Scanner      │");
-            setCur(50, 8);
-            Console.WriteLine("│                        │");
-            setCur(50, 9);
-            Console.WriteLine("│     Tech Points = 50   │");
-            setCur(50, 10);
-            Console.WriteLine("│     Turns = 10         │");
-            setCur(50, 11);
-            Console.WriteLine("└──────┬─────────────────┘");
-            setCur(50, 12);
-            Console.WriteLine("       │");
-            setCur(50, 13);
-            Console.WriteLine("┌──────┴───────┐");
-            setCur(50, 14);
-            Console.WriteLine("│Fusion Physics│");
-            setCur(50, 15);
-            Console.WriteLine("├──────────────┴─────────┐");
-            setCur(50, 16);
-            Console.WriteLine("│     * Fusion Rifle     │");
-            setCur(50, 17);
-            Console.WriteLine("│     * fusion Beam      │");
-            setCur(50, 18);
-            Console.WriteLine("│      tech = 75         │");
-            setCur(50, 19);
-            Console.WriteLine("└───────────┬────────────┘");
-            setCur(50, 20);
-            Console.WriteLine("            │");
-            setCur(50, 21);
-            Console.WriteLine("    ┌───────┴────────┐");
-            setCur(50, 22);
-            Console.WriteLine("    │Neutrino Physics│");
-            setCur(50, 23);
-            Console.WriteLine("┌───┴────────────────┴───┐");
-            setCur(50, 24);
-            Console.WriteLine("│    * Neutron Scanner   │");
-            setCur(50, 25);
-            Console.WriteLine("│    * Neutron Blaster   │");
-            setCur(50, 26);
-            Console.WriteLine("│       tech = 100       │");
-            setCur(50, 27);
-            Console.WriteLine("└───────────┬────────────┘");
-            setCur(50, 28);
-            Console.WriteLine("            │");
-            setCur(50, 29);
-            Console.WriteLine("   ┌────────┴─────────┐");
-            setCur(50, 30);
-            Console.WriteLine("   │artificial gravity│");
-            setCur(50, 31);
-            Console.WriteLine("┌──┴──────────────────┴──┐");
-            setCur(50, 32);
-            Console.WriteLine("│  * Anti Gravity Armor  │");
-            setCur(50, 33);
-            Console.WriteLine("│  * long range flights  │");
-            setCur(50, 34);
-            Console.WriteLine("│       tech = 125       │");
-            setCur(50, 35);
-            Console.WriteLine("└────────────────────────┘");
-            */
+                    string name = manager.Techcards[x, y].Name;
+                    string line = "";
+                    string endline = "";
+                    string bump = "";
+                    for (int i = 0; i < name.Length; i++)
+                    {
+                        line += "─";
+                    }
+                    for (int i = 0; i < 16 - name.Length; i++)
+                    {
+                        endline += "─";
+                    }
+                    for (int i = 0; i < name.Length; i++)
+                    {
+                        if (i != name.Length / 2 - 1)
+                        {
+                            bump += "─";
+                        }
+                        else
+                        {
+                            bump += "┴";
+                        }
+                    }
+                    setCur(10 + 40 * x, 3 + y * 10);
+                    if (y == 0)
+                    {
+                        Console.WriteLine("      ┌─" + line  + "─┐");
+                    }
+                    else
+                    {
+                        Console.WriteLine("      ┌─" + bump + "─┐");
+                    }
+                    setCur(10 + 40 * x, 4 + y * 10);
+                    Console.WriteLine("      │ " + name + " │");
+                    setCur(10 + 40 * x, 5 + y * 10);
+                    Console.WriteLine("┌─────┴──" + line + "┴" + endline + "┐");
+                    setCur(10 + 40 * x, 6 + y * 10);
+                    Console.WriteLine("│ *                       │");
+                    setCur(10 + 40 * x, 7 + y * 10);
+                    Console.WriteLine("│ *                       │");
+                    setCur(14 + 40 * x, 6 + y * 10);
+                    Console.WriteLine(manager.Techcards[x, y].Desc1);
+                    setCur(14 + 40 * x, 7 + y * 10);
+                    Console.WriteLine(manager.Techcards[x, y].Desc1);
+                    setCur(10 + 40 * x, 8 + y * 10);
+                    Console.WriteLine("│                         │");
+                    setCur(10 + 40 * x, 9 + y * 10);
+                    Console.WriteLine("│  Tech Points =          │");
+                    setCur(10 + 40 * x, 10 + y * 10);
+                    Console.WriteLine("│  Turns =                │");
+                    setCur(27 + 40 * x, 9 + y * 10);
+                    Console.WriteLine(manager.Techcards[x, y].Cost);
+                    setCur(21 + 40 * x, 10 + y * 10);
+                    Console.WriteLine(manager.Techcards[x, y].Turns);
+                    setCur(10 + 40 * x, 11 + y * 10);
+                    if (y + 1 < manager.Techcards.GetLength(1) && manager.Techcards[x, y + 1] != null)
+                    {
+                        string linenext = "";
+                        string endlinenext = "";
+                        for (int i = 0; i < manager.Techcards[x, y + 1].Name.Length / 2; i++)
+                        {
+                            linenext += "─";
+                        }
+                        for (int i = 0; i < 18 - manager.Techcards[x, y + 1].Name.Length / 2; i++)
+                        {
+                            endlinenext += "─";
+                        }
+                        Console.WriteLine("└──────" + linenext + "┬" + endlinenext + "┘");
+                        setCur(17 + manager.Techcards[x, y + 1].Name.Length / 2 + 40 * x, 12 + y * 10);
+                        Console.WriteLine("│");
+                    }
+                    else
+                    {
+                        setCur(10 + 40 * x, 11 + y * 10);
+                        Console.WriteLine("└─────────────────────────┘");
+                    }
+                }
+            }
 
-            Console.ReadKey();
+            //Console.BackgroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Red;
+            setCur(18, 4);
+            Console.WriteLine(manager.Techcards[0, 0].Name);
+            int cx = 0;
+            int cy = 0;
+            while (true)
+            {
+                ConsoleKey key = Console.ReadKey(true).Key;
+
+                // Console.BackgroundColor = ConsoleColor.Black;
+                if (manager.Techcards[cx, cy].Active)
+                    Console.ForegroundColor = ConsoleColor.Green;
+                else
+                    Console.ForegroundColor = ConsoleColor.White;
+                if (manager.Techcards[cx, cy].Done)
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                setCur(18 + cx * 40, 4 + cy * 10);
+                Console.WriteLine(manager.Techcards[cx, cy].Name);
+
+                if (key == ConsoleKey.Escape)
+                {
+                    break;
+                }
+                if (key == ConsoleKey.Enter && !manager.Techcards[cx, cy].Active && !manager.Techcards[cx, cy].Done && manager.Tech >= manager.Techcards[cx, cy].Cost)
+                {
+                    bool available = true;
+                    for (int i = 0; i < manager.Techcards.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < manager.Techcards.GetLength(1); j++)
+                        {
+                            if (manager.Techcards[i, j] != null && manager.Techcards[i, j].Active)
+                            {
+                                available = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    for (int i = 1; i < 5; i++)
+                    {
+                        if (cy - i > -1 && manager.Techcards[cx, cy - i] != null && !manager.Techcards[cx, cy - i].Active)
+                        {
+                            available = false;
+                            break;
+                        }
+                    }
+                    if (available)
+                    {
+                        manager.Tech -= manager.Techcards[cx, cy].Cost;
+                        manager.Techcards[cx, cy].Active = true;
+                        break;
+                    }
+                }
+                if (key == ConsoleKey.DownArrow || key ==  ConsoleKey.S)
+                {
+                    if (cy + 1 < manager.Techcards.GetLength(1) && manager.Techcards[cx, cy+1] != null)
+                    {
+                        cy++;
+                    }
+                }
+                if (key == ConsoleKey.UpArrow || key == ConsoleKey.W)
+                {
+                    if (cy - 1 > -1 && manager.Techcards[cx, cy-1] != null)
+                    {
+                        cy--;
+                    }
+                }
+                if (key == ConsoleKey.RightArrow || key == ConsoleKey.D)
+                {
+                    if (cx + 1 < manager.Techcards.GetLength(0) && manager.Techcards[cx+1, cy] != null)
+                    {
+                        cx++;
+                    }
+                }
+                if (key == ConsoleKey.LeftArrow || key == ConsoleKey.A)
+                {
+                    if (cx - 1 > -1 && manager.Techcards[cx-1, cy] != null)
+                    {
+                        cx--;
+                    }
+                }
+
+                //Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.Red;
+                setCur(18 + cx * 40, 4 + cy * 10);
+                Console.WriteLine(manager.Techcards[cx, cy].Name);
+            }
+
+
             Console.Clear();
             manager.Showmove = true;
         }

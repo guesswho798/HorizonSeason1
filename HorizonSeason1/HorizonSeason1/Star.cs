@@ -734,7 +734,7 @@ namespace HorizonSeason1
             }
             else if (selectedP.TypeName != "Destroyed Planet")
             {
-                Console.WriteLine("Empty planet");
+                Console.WriteLine("uninhabited planet");
             }
 
             Console.SetCursorPosition(105, 1);
@@ -1054,8 +1054,6 @@ namespace HorizonSeason1
                     Program.manager.Show = false;
                     drawUI(selector);
                     drawstar(Console.WindowWidth / 2 - radius * 6, Console.WindowHeight / 2 - radius);
-                    if (astroidbelt)
-                        drawAstroidBelt();
                 }
                 else if (key == ConsoleKey.Escape || key == ConsoleKey.Backspace)
                 {
@@ -1308,8 +1306,15 @@ namespace HorizonSeason1
                 //showing the suns and planets stats
                 if (!onlySun)
                 {
+                    if (homeStar)
+                    {
+
+                    }
                     if (form == "")
-                        return "'" + starName + "' " + name + " - home star = " + homeStar + "\n" + pla;
+                        if (homeStar)
+                            return "'" + starName + "' " + name + " - home star " + "\n" + pla;
+                        else
+                            return "'" + starName + "' " + name + "\n" + pla;
                     else
                         return "'" + starName + "' " + name + " - Life form = " + form + "\n" + pla;
                 }
@@ -1317,7 +1322,10 @@ namespace HorizonSeason1
                 else
                 {
                     if (form == "")
-                        return name + " - home star = " + homeStar;
+                        if (homeStar)
+                            return name + " - home star";
+                        else
+                            return name;
                     else
                         return name + " - Life form = " + form;
                 }

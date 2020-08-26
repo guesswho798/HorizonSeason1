@@ -22,6 +22,7 @@ namespace HorizonSeason1
         private fleet[] fleet = new fleet[10];
         private Ship[] ships;
         private Galaxy galaxy;
+        private TechCard[,] techcards;
 
         private bool showmove;
         private bool show;
@@ -111,6 +112,12 @@ namespace HorizonSeason1
             Ships[10] = new Ship("Trade Ship", "Produces 50 Energy per turn", new int[] { 50, 25, 0, 0, 0 }, 100, 100, 0, 9);
             #endregion
 
+            #region tech cards
+            techcards = new TechCard[,] { { new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 100), null }, 
+                                        { new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 100) },
+                                        { new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 120) }};
+            #endregion
+
         }
 
         //this is used for the buy options
@@ -191,6 +198,20 @@ namespace HorizonSeason1
                     }
                 }
             }
+
+            //checking all tech cards
+            for (int i = 0; i < techcards.GetLength(1); i++)
+            {
+                for (int j = 0; j < techcards.GetLength(0); j++)
+                {
+                    if (techcards[j, i] != null && techcards[j, i].Active)
+                    {
+                        techcards[j, i].Turns -= 1;
+                        if (techcards[j, i].Done)
+                            techcards[j, i].Active = false;
+                    }
+                }
+            }
         }
 
         public int Metals { get => metals; set => metals = value; }
@@ -207,5 +228,6 @@ namespace HorizonSeason1
         public int Round { get => round; set => round = value; }
         public Ship[] Ships { get => ships; set => ships = value; }
         public int Tech { get => tech; set => tech = value; }
+        internal TechCard[,] Techcards { get => techcards; set => techcards = value; }
     }
 }
