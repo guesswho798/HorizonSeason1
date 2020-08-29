@@ -708,7 +708,7 @@ namespace HorizonSeason1
             {
                 Console.WriteLine("Max population: " + selectedP.MaxPop);
 
-                Console.WriteLine("Population: " + selectedP.Pops);
+                Console.WriteLine("Population: " + Math.Round(selectedP.Pops * 10) / 10);
 
                 if (selectedP.GetProduction() == "")
                     Console.WriteLine("Production: None");

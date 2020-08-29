@@ -357,6 +357,7 @@ namespace HorizonSeason1
         {
             Console.Clear();
             manager.Showmove = false;
+            int width = 30;
 
             for (int x = 0; x < manager.Techcards.GetLength(0); x++)
             {
@@ -383,7 +384,7 @@ namespace HorizonSeason1
                     {
                         line += "─";
                     }
-                    for (int i = 0; i < 16 - name.Length; i++)
+                    for (int i = 0; i < width - (10 + name.Length); i++)
                     {
                         endline += "─";
                     }
@@ -412,22 +413,32 @@ namespace HorizonSeason1
                     setCur(10 + 40 * x, 5 + y * 10);
                     Console.WriteLine("┌─────┴──" + line + "┴" + endline + "┐");
                     setCur(10 + 40 * x, 6 + y * 10);
-                    Console.WriteLine("│ *                       │");
+                    Console.WriteLine("│ *");
+                    setCur(10 + 40 * x + width, 6 + y * 10);
+                    Console.WriteLine("│");
                     setCur(10 + 40 * x, 7 + y * 10);
-                    Console.WriteLine("│ *                       │");
+                    Console.WriteLine("│ *");
+                    setCur(10 + 40 * x + width, 7 + y * 10);
+                    Console.WriteLine("│");
                     setCur(14 + 40 * x, 6 + y * 10);
                     Console.WriteLine(manager.Techcards[x, y].Desc1);
                     setCur(14 + 40 * x, 7 + y * 10);
                     Console.WriteLine(manager.Techcards[x, y].Desc1);
                     setCur(10 + 40 * x, 8 + y * 10);
-                    Console.WriteLine("│                         │");
+                    Console.WriteLine("│");
+                    setCur(10 + 40 * x + width, 8 + y * 10);
+                    Console.WriteLine("│");
                     setCur(10 + 40 * x, 9 + y * 10);
-                    Console.WriteLine("│  Tech Points =          │");
+                    Console.WriteLine("│   Tech Points =");
+                    setCur(10 + 40 * x + width, 9 + y * 10);
+                    Console.WriteLine("│");
                     setCur(10 + 40 * x, 10 + y * 10);
-                    Console.WriteLine("│  Turns =                │");
-                    setCur(27 + 40 * x, 9 + y * 10);
+                    Console.WriteLine("│   Turns =");
+                    setCur(10 + 40 * x + width, 10 + y * 10);
+                    Console.WriteLine("│");
+                    setCur(28 + 40 * x, 9 + y * 10);
                     Console.WriteLine(manager.Techcards[x, y].Cost);
-                    setCur(21 + 40 * x, 10 + y * 10);
+                    setCur(22 + 40 * x, 10 + y * 10);
                     Console.WriteLine(manager.Techcards[x, y].Turns);
                     setCur(10 + 40 * x, 11 + y * 10);
                     if (y + 1 < manager.Techcards.GetLength(1) && manager.Techcards[x, y + 1] != null)
@@ -438,7 +449,7 @@ namespace HorizonSeason1
                         {
                             linenext += "─";
                         }
-                        for (int i = 0; i < 18 - manager.Techcards[x, y + 1].Name.Length / 2; i++)
+                        for (int i = 0; i < width - (8 + manager.Techcards[x, y + 1].Name.Length / 2); i++)
                         {
                             endlinenext += "─";
                         }
@@ -448,8 +459,12 @@ namespace HorizonSeason1
                     }
                     else
                     {
-                        setCur(10 + 40 * x, 11 + y * 10);
-                        Console.WriteLine("└─────────────────────────┘");
+                        string linenext = "";
+                        for (int i = 1; i < width; i++)
+                        {
+                            linenext += "─";
+                        }
+                        Console.WriteLine("└" + linenext + "┘");
                     }
                 }
             }
@@ -495,7 +510,7 @@ namespace HorizonSeason1
 
                     for (int i = 1; i < 5; i++)
                     {
-                        if (cy - i > -1 && manager.Techcards[cx, cy - i] != null && !manager.Techcards[cx, cy - i].Active)
+                        if (cy - i > -1 && manager.Techcards[cx, cy - i] != null && !manager.Techcards[cx, cy - i].Done)
                         {
                             available = false;
                             break;

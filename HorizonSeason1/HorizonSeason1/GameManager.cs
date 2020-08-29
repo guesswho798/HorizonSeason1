@@ -113,9 +113,9 @@ namespace HorizonSeason1
             #endregion
 
             #region tech cards
-            techcards = new TechCard[,] { { new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 100), null }, 
-                                        { new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 100) },
-                                        { new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 100), new TechCard("test", "desc1", "desc2", 10, 120) }};
+            techcards = new TechCard[,] { { new TechCard("test11", "desc1", "desc2", 10, 100), new TechCard("test21", "desc1", "desc2", 10, 100), null }, 
+                                        { new TechCard("test12", "desc1", "desc2", 10, 100), new TechCard("test22", "desc1", "desc2", 10, 100), new TechCard("test32", "desc1", "desc2", 10, 100) },
+                                        { new TechCard("test13", "desc1", "desc2", 10, 100), new TechCard("test23", "desc1", "desc2", 10, 100), new TechCard("test33", "desc1", "desc2", 10, 120) }};
             #endregion
 
         }

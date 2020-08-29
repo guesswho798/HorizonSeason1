@@ -13,7 +13,7 @@ namespace HorizonSeason1
         private int baseHabitabilty;
         private int maxPop;
         private int size;
-        private int pops = 0;
+        private double pops = 0;
         private int position;
         private int shipyardPosition;
         private bool playerOwned;
@@ -30,7 +30,7 @@ namespace HorizonSeason1
         public int BaseHabitabilty { get => baseHabitabilty; set => baseHabitabilty = value; }
         public int MaxPop { get => maxPop; set => maxPop = value; }
         public int Size { get => size; set => size = value; }
-        public int Pops { get => pops; set => pops = value; }
+        public double Pops { get => pops; set => pops = value; }
         public int Position { get => position; set => position = value; }
         public bool CreatureOwned { get => creatureOwned; set => creatureOwned = value; }
         public bool PlayerOwned { get => playerOwned; set => playerOwned = value; }
@@ -238,12 +238,11 @@ namespace HorizonSeason1
 
         public void turn()
         {
-            //Console.WriteLine(buildings.Length);
+            //building buildings
             for (int i = 0; i < buildings.Length; i++)
             {
                 buildings[i].turn();
             }
-
             for (int i = buildingqueue.Length - 1; i >= 0; i--)
             {
                 Console.WriteLine(buildingqueue[i].NumOfTurns);
@@ -253,6 +252,12 @@ namespace HorizonSeason1
                     Array.Resize(ref buildingqueue, buildingqueue.Length - 1);
                 }
             }
+
+            //adding pop
+            double add = this.baseHabitabilty;
+            add /= 100;
+            pops += pops * 0.05 * add;
+            pops = Math.Min(pops, maxPop);
         }
         public string GetQueue()
         {
