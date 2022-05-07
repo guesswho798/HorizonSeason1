@@ -439,7 +439,10 @@ namespace HorizonSeason1
                     setCur(28 + 40 * x, 9 + y * 10);
                     Console.WriteLine(manager.Techcards[x, y].Cost);
                     setCur(22 + 40 * x, 10 + y * 10);
-                    Console.WriteLine(manager.Techcards[x, y].Turns);
+                    if (manager.Techcards[x, y].Turns == 0)
+                        Console.WriteLine("Done");
+                    else
+                        Console.WriteLine(manager.Techcards[x, y].Turns);
                     setCur(10 + 40 * x, 11 + y * 10);
                     if (y + 1 < manager.Techcards.GetLength(1) && manager.Techcards[x, y + 1] != null)
                     {

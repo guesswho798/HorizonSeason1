@@ -1,0 +1,7 @@
+C:\Users\Raz\Documents\GitHub\HorizonSeason1\HorizonSeason1\HorizonSeason1\bin\Release\HorizonSeason1.exe.config
+C:\Users\Raz\Documents\GitHub\HorizonSeason1\HorizonSeason1\HorizonSeason1\bin\Release\HorizonSeason1.exe
+C:\Users\Raz\Documents\GitHub\HorizonSeason1\HorizonSeason1\HorizonSeason1\bin\Release\HorizonSeason1.pdb
+C:\Users\Raz\Documents\GitHub\HorizonSeason1\HorizonSeason1\HorizonSeason1\obj\Release\HorizonSeason1.csprojAssemblyReference.cache
+C:\Users\Raz\Documents\GitHub\HorizonSeason1\HorizonSeason1\HorizonSeason1\obj\Release\HorizonSeason1.csproj.CoreCompileInputs.cache
+C:\Users\Raz\Documents\GitHub\HorizonSeason1\HorizonSeason1\HorizonSeason1\obj\Release\HorizonSeason1.exe
+C:\Users\Raz\Documents\GitHub\HorizonSeason1\HorizonSeason1\HorizonSeason1\obj\Release\HorizonSeason1.pdb

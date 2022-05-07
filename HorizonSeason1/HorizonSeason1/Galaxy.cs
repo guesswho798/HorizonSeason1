@@ -187,9 +187,6 @@ namespace HorizonSeason1
                     }
                 }
             }
-
-
-            
         }
 
         public void info()
@@ -213,19 +210,19 @@ namespace HorizonSeason1
             {
                 Star s = stars[xy[i].getx(), xy[i].gety()];
 
-                //calculating distence from owned stars
-                if (s.HomeStar)
-                {
-                    double r_in = s.Range - 0.0;
-                    double r_out = s.Range + 0.1;
+                //calculating distance from owned stars
+                //if (s.playerOwned() || s.HomeStar)
+                //{
+                    double r_in = s.getrange() - 0.0;
+                    double r_out = s.getrange() + 0.1;
                     int countery = 0;
-                    for (double y = s.Range; y >= -s.Range; --y)
+                    for (double y = s.getrange(); y >= -s.getrange(); --y)
                     {
                         int counterx = 0;
                         for (double x = -s.Range; x < r_out; x += 0.5)
                         {
-                            int placex = counterx + s.getx() - s.Range - 3;
-                            int placey = countery + s.gety() - s.Range;
+                            int placex = counterx + s.getx() - s.getrange() - 3;
+                            int placey = countery + s.gety() - s.getrange();
 
                             double value = x * x + y * y;
 
@@ -235,14 +232,7 @@ namespace HorizonSeason1
                                 Console.SetCursorPosition(offsetx + placex, offsety + placey);
 
                                 //showing only the stars in range
-                                if (value >= r_in * r_in && value <= r_out * r_out)
-                                {
-                                    Console.Write(" ");
-
-                                    if (stars[placex, placey] != null)
-                                        stars[placex, placey].Visible = true;
-                                }
-                                if (value < r_in * r_in && value < r_out * r_out)
+                                if (value >= r_in * r_in && value <= r_out * r_out || value < r_in * r_in && value < r_out * r_out)
                                 {
                                     Console.Write(" ");
 
@@ -254,7 +244,7 @@ namespace HorizonSeason1
                         }
                         countery++;
                     }
-                }
+                //}
             }
 
             Console.ForegroundColor = ConsoleColor.White;
@@ -286,7 +276,7 @@ namespace HorizonSeason1
             }
             Console.BackgroundColor = ConsoleColor.Black;
 
-            //DrawFleet(f, offsetx, offsety); was supposed to draw fleets in the galaxy
+            //DrawFleet(f, offsetx, offsety); // was supposed to draw fleets in the galaxy
         }
         
 

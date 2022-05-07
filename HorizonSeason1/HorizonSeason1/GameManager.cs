@@ -195,6 +195,10 @@ namespace HorizonSeason1
                         fleet[i].X = fleet[i].Place.X;
                         fleet[i].Y = fleet[i].Place.Y;
                         fleet[i].Target = null;
+                        if (!fleet[i].Place.CreatureOwned && !fleet[i].Place.PlayerOwned)
+                        {
+                            fleet[i].Place.PlayerOwned = true;
+                        }
                     }
                 }
             }

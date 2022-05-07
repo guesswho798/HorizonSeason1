@@ -1286,6 +1286,24 @@ namespace HorizonSeason1
         {
             return astroidbelt;
         }
+        public bool playerOwned()
+        {
+            for (int i = 0; i < planets.Length; i++)
+                if (planets[i].PlayerOwned)
+                    return true;
+            
+            return false;
+        }
+
+        public int getrange()
+        {
+            int max = 0;
+            for (int i = 0; i < planets.Length; i++)
+                if (max < planets[i].Range)
+                    max = planets[i].Range;
+
+            return max;
+        }
         public string GetInfo(bool onlySun = false)
         {
             try
@@ -1313,8 +1331,10 @@ namespace HorizonSeason1
                     if (form == "")
                         if (homeStar)
                             return "'" + starName + "' " + name + " - home star " + "\n" + pla;
+                        else if (playerOwned())
+                            return "'" + starName + "' " + name + " - player owned " + "\n" + pla;
                         else
-                            return "'" + starName + "' " + name + "\n" + pla;
+                             return "'" + starName + "' " + name + "\n" + pla;
                     else
                         return "'" + starName + "' " + name + " - Life form = " + form + "\n" + pla;
                 }
@@ -1324,6 +1344,8 @@ namespace HorizonSeason1
                     if (form == "")
                         if (homeStar)
                             return name + " - home star";
+                        else if (playerOwned())
+                            return name + " - player owned";
                         else
                             return name;
                     else

@@ -18,6 +18,7 @@ namespace HorizonSeason1
         private int shipyardPosition;
         private bool playerOwned;
         private bool creatureOwned;
+        private int range;
         private LifeForm life;
         private PlanetBuildings[] buildings;
         private PlanetBuildings[] buildingqueue;
@@ -39,6 +40,7 @@ namespace HorizonSeason1
         public int ShipyardPosition { get => shipyardPosition; set => shipyardPosition = value; }
         public int X { get => x; set => x = value; }
         public int Y { get => y; set => y = value; }
+        public int Range { get => range; set => range = value; }
 
         public Planet(bool homestar, int[] array, int radius, Random rand, int position, int x, int y)
         {
@@ -189,7 +191,7 @@ namespace HorizonSeason1
         public Planet(int[] array, int radius, Random rand, int position, LifeForm life, int x, int y)
         {
             hasShipyard = false;
-            this.playerOwned = false;
+            this.playerOwned = false; //false
             this.creatureOwned = true;
             this.Position = position;
             this.life = life;
